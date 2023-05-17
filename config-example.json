@@ -1,0 +1,29 @@
+{
+  "server_address": "127.0.0.1",
+  "server_port": "8086",
+  "services": [
+    {
+      "name": "google_translate1",
+      "type": "GOOGLE",
+      "app_key": "key",
+      "proxy": "http://127.0.0.1:7890",
+      "weight": 1,
+      "limit": 500000
+    },
+    {
+      "name": "google_translate2",
+      "type": "GOOGLE",
+      "app_key": "key",
+      "proxy": true,
+      "weight": 1,
+      "limit": 500000,
+      "ratelimit": {
+        "type": "token-bucket",
+        "capacity": 100,
+        "time_window": 1
+      }
+    }
+  ],
+  "mode": "select",
+  "load-balance-rule": "weight"
+}
