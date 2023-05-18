@@ -1,25 +1,40 @@
 {
   "server_address": "127.0.0.1",
   "server_port": "8086",
+  "datasource": {
+    "type": "sqlite"
+  },
   "services": [
     {
-      "name": "google_translate1",
-      "type": "GOOGLE",
+      "name": "google1",
+      "type": "googlex",
       "app_key": "key",
       "proxy": "http://127.0.0.1:7890",
-      "weight": 1,
+      "weight": 3,
       "limit": 500000
     },
     {
-      "name": "google_translate2",
-      "type": "GOOGLE",
-      "app_key": "key",
-      "proxy": true,
+      "name": "tencent1",
+      "type": "tencent",
+      "app_key": "app_key",
+      "app_id": "app_id",
       "weight": 1,
       "limit": 500000,
       "ratelimit": {
         "type": "token-bucket",
-        "capacity": 100,
+        "capacity": 5,
+        "time_window": 1
+      }
+    },
+    {
+      "name": "caiyun1",
+      "type": "caiyun",
+      "app_key": "app_key",
+      "weight": 2,
+      "limit": 500000,
+      "ratelimit": {
+        "type": "token-bucket",
+        "capacity": 10,
         "time_window": 1
       }
     }

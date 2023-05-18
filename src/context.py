@@ -5,14 +5,16 @@ from src.utils.ratelimiter import RATELIMITERS
 from src.translate_engine import TranslateEngine
 from flask import Flask
 from src.utils import hash
+from src.utils.ds import Sqlite3Datasource
+import src.storage.ds_sqlite3 as storage
 import logging,logging.config,os,time
-import sqlite3
 
 APP_NAME = "transcat"
 
-applicationContext = None
-translateEngine = None
+applicationContext: Flask = None
+translateEngine: TranslateEngine = None
 translators = None
+datasource: Sqlite3Datasource = None
 
 def initLogger():
   if not os.path.exists('logs'):
@@ -21,12 +23,9 @@ def initLogger():
   logging.config.fileConfig('assets/logging.conf')
 
 def initDB():
-  if not os.path.exists('assets/data.db'):
-    conn = sqlite3.connect('assets/data.db')
-    with open('assets/schema.sql') as f:
-      schema = f.read()
-      conn.executescript(schema)
-    conn.close()
+  global datasource
+  datasource = Sqlite3Datasource("assets/data.db")
+  datasource.init("assets/schema.sql")
 
 def initTranslators(config):
   global translators
@@ -53,7 +52,7 @@ def initTranslators(config):
       raise Exception(f'duplicate key {service.name}')
     serviceMap[serviceId] = service
 
-    if serviceType == "TENCENT":
+    if serviceType == "tencent":
       region = item.get('region')
       if region:
         service.region = region
@@ -73,16 +72,14 @@ def initTranslators(config):
 
 
 def initServiceUsage(serviceMap):
-  keys = list(serviceMap.keys())
-  query = 'select * from service_usage where service_id in ({})'.format(','.join('?' * len(keys)))
-  conn = sqlite3.connect('assets/data.db')
-  conn.row_factory = sqlite3.Row
-  rows = conn.execute(query,keys)
-  for item in rows:
-    row = dict(item)
-    service = serviceMap[row['service_id']]
-    if service:
-      service.usage = row['usage']
+  serviceIds = list(serviceMap.keys())
+  with datasource.getConnection() as conn:
+    rows = storage.findUsageByServiceIds(conn,serviceIds)
+    for item in rows:
+      row = dict(item)
+      service = serviceMap.get(row['service_id']) or None
+      if service:
+        service.usage = row['usage']
 
 def initChooser(translators,mode,rule):
   klass = MODE_DICT.get(mode)
@@ -117,7 +114,6 @@ def createAppContext(config):
   global applicationContext
   applicationContext = Flask(APP_NAME)
   return applicationContext
-
 
 def initApplicationContext(config):
   initDB()

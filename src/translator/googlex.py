@@ -25,10 +25,10 @@ LANGUAGE = {
   "hi": ["any"]
 }
 
-class Google(BaseTranslator):
+class GoogleX(BaseTranslator):
   def __init__(self,name,appKey=None,appId=None,limit=-1,weight=1,proxy=False):
     super().__init__(name,appId,appKey,limit,weight,proxy)
-    self.type = "google"
+    self.type = "googlex"
     # sl: source language
     # tl: target language
     # q: query word / text

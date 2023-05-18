@@ -1,5 +1,6 @@
 import argparse,os,json
 from src.context import initApplicationContext
+from waitress import serve
 
 def loadConfig(options):
   path = options.config
@@ -22,12 +23,14 @@ def getOptions():
   return parser.parse_args()
 
 def startWebServer(app,config):
-  from src.web.api.translate import translation
+  from src.web.api import translation
   app.register_blueprint(translation.bp)
 
-  address = config.get('server_address') or '127.0.0.1'
-  port = config.get('server_port') or 8010
-  app.run(address,port,debug=False,threaded=True)
+  address = config.get('server_address','127.0.0.1')
+  port = config.get('server_port',8010)
+  print(f'transcat is running on {address}:{port}')
+  serve(app,host=address,port=port)
+  # app.run(host=address,port=port,debug=True,threaded=True)
 
 def main():
   options = getOptions()

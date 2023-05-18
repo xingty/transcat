@@ -1,10 +1,13 @@
 # from distutils.core import setup, find_packages
 from setuptools import setup,find_packages
 
+VERSION = '0.0.1'
+
 requirements = [
   'flask',
+  'waitress',
   'requests',
-  'langdetect'
+  'langdetect',
 ]
 
 setup(
@@ -14,10 +17,16 @@ setup(
   author='Bigbyto',
   author_email='bigbyto@gmail.com',
   url='https://github.com/bigbyto/transcat',
-  require_packages=requirements,
+  install_requires=requirements,
+  python_requires='>=3.7',
   packages=find_packages(),
+  entry_points={
+    'console_scripts': [
+      'transcat = src.cli:main',
+    ]
+  },
   data_files=[
     ('assets',['assets/schema.sql','assets/logging.conf']),
-  ],
+  ]
 
 )

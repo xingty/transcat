@@ -213,4 +213,4 @@ ENV/
 
 config.json
 logs/*
-data/data.db
+assets/data.db
