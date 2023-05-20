@@ -1,7 +1,7 @@
 # from distutils.core import setup, find_packages
 from setuptools import setup,find_packages
 
-VERSION = '0.0.1'
+VERSION = '0.0.3'
 
 requirements = [
   'flask',
@@ -12,7 +12,7 @@ requirements = [
 
 setup(
   name='transcat',
-  version='0.0.1',
+  version=VERSION,
   description='A tool for managing translation services',
   author='Bigbyto',
   author_email='bigbyto@gmail.com',
