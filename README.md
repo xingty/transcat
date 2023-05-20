@@ -177,7 +177,7 @@ transcat提供了一些REST-API，可以通过API更改mode等，目前支持的
   {
     "code": 200,
     "id": 123321,
-    "data": '你好 世界',
+    "data": "你好 世界",
     "alternatives": []
   }
   ```
@@ -212,6 +212,10 @@ transcat提供了一些REST-API，可以通过API更改mode等，目前支持的
 Web-UI
 
 选择某个服务翻译的API
+
+微软翻译
+
+
 
 
 
