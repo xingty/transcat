@@ -1,25 +1,14 @@
-from translator.caiyun import Caiyun
-from translator.tencent import Tencent
-from translator.baidu import Baidu
-from translator.deeplx import DeepLX
-from translator.google import Google
-
-from mode.loadbalancer import LoadBalancer
-from src.translate_engine import TranslateEngine
-
-from translator.exception import TranslactionException,ExceptionType
-
 import logging
 
 # result = caiyun.translate('有时候我也想去旅游', 'auto', 'en
 # result = baidu.translate('你好', 'zh', 'en')
 # print(result)
 
-google = Google('google1',7,3)
+# google = Google('google1',7,3)
 # result = google.translate('Gives administrators the ability to assign different weights to each server', 'en', 'zh')
 # print(result)
 
-deeplx = DeepLX('deeplx1')
+# deeplx = DeepLX('deeplx1')
 # result = deeplx.translate('hey, i need some translators', 'en', 'zh')
 # print(result)
 # print(result)
@@ -36,8 +25,58 @@ deeplx = DeepLX('deeplx1')
 #   service.updateState(len('hello world'))
 #   print(f'after name: {service.getName()} usage: {service.getUsage()}, conn: {service.getActiveConnections()}')
 #   print('--' * 30 + "\n")
+from src.utils.ds.datasource import Sqlite3Datasource
+import src.storage.ds_sqlite3 as storage
+def testFindServiceIds():
+  # ds = Sqlite3Datasource("assets/data.db")
+  rows = storage.findUsageByServiceIds([
+    '3715311b47edfa56dfb48f758ac3ce28',
+    'f314efffb523de9cff81c40c728943d9'
+  ])
+  rows = [dict(row) for row in rows]
 
-from utils.ratelimiter.token_bucket import TokenBucket
+  print(rows)
+
+def testFindServiceId():
+  # ds = Sqlite3Datasource("assets/data.db")
+  row = storage.findUsageByServiceId('3715311b47edfa56dfb48f758ac3ce28')
+
+  print(dict(row))
+
+
+def testAutocloseableConnection():
+  ds = Sqlite3Datasource("assets/data.db")
+
+  with ds.getConnection() as conn:
+    rows = conn.execute("select * from service_usage").fetchall()
+    print([dict(row) for row in rows])
+
+
+class User():
+  def __init__(self,name,age) -> None:
+    self.name = name
+    self.age = age
+
+  def __str__(self) -> str:
+    return f'name: {self.name}, age: {self.age}'
+
+def testObject():
+  user = User('zhangsan',18)
+  user.phone = '138001380000'
+
+  print(user.phone)
+
+def testDict():
+  data = {"a": 1, "b": 2}
+  data2 = data.copy()
+  data2['a'] = 3
+
+  print(data)
+  print(data2)
+
+testDict()
+testObject()
+
 import threading,time
 
 def testRatelimiter():
@@ -54,7 +93,7 @@ def testRatelimiter():
   thread = threading.Thread(target=testBucket)
   thread.start()
 
-from utils.text import splitByMark
+from src.utils.text import splitByMark
 def testSplit():
   text = "The docker build command uses the Dockerfile to build a new container image hsldfhkajlsdfhakljshdfjkashdflkjashdfklhasdfasjdfhlajsdhfklahsdjfkahsdfkljhasdjfhasdfasdfasdfasdfasdfasdfasdf. You might have noticed that Docker downloaded a lot of “layers” hsldfhkajlsdfhakljshdfjkashdflkjashdfklhasdfasjdfhlajsdhfklahsdjfkahsdfkljhasdjfhasdfasdfasdfasdfasdfasdfasdf. This is because you instructed the builder that you wanted to start from the node:18-alpine image. But, since you didn’t have that on your machine, Docker needed to download the image."
   mark = {'!',"\uff01",".","。","?","\uff1f"}
@@ -75,23 +114,20 @@ def testDeeplX():
 
 # trans = Google(name="hello",appId="world")
 # print(trans)
-import os,logging.config
-if not os.path.exists('logs'):
-  os.mkdir('logs')
+# import os,logging.config
+# if not os.path.exists('logs'):
+#   os.mkdir('logs')
 
-logging.config.fileConfig('logging.conf')
-logger = logging.getLogger('translate')
+# logging.config.fileConfig('logging.conf')
+# logger = logging.getLogger('translate')
 
 
-arr = [1,2,3]
-my_dict = {
-  'id': 123,
-  'name': 'bigcat'
-}
-def testLogger():
-  logger.info("hello %s world %s, len=%s, dict=%s",'test','hh',len(arr),my_dict)
+# arr = [1,2,3]
+# my_dict = {
+#   'id': 123,
+#   'name': 'bigcat'
+# }
 
-testLogger()
 # testEngineRatelimiter()
 
 # testRatelimiter()
@@ -141,4 +177,4 @@ def testDict():
   d.update(e)
   print(d)
 
-testDict()
+# testDict()

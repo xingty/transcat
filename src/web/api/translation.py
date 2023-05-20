@@ -1,15 +1,12 @@
 from flask import (Blueprint, request)
-from src.context import translateEngine
-from src.web.api.translate.service import TranslateService
+import src.web.translate_service as service
 
 bp = Blueprint('translate', __name__, url_prefix='/api')
-service = TranslateService(translateEngine)
 
 @bp.route('/translate/deeplx/adapter',methods=['POST'])
 def deeplxAdapter():
   showEngine = request.args.get('show_engine') or None
   useCache = not (request.args.get('disable_cache') == '1')
-  print(useCache)
   data = service.translate(request.json,showEngine,useCache)
 
   return {
