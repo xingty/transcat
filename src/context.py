@@ -4,10 +4,11 @@ from src.translator import TRANSLATORS
 from src.utils.ratelimiter import RATELIMITERS
 from src.translate_engine import TranslateEngine
 from flask import Flask
-from src.utils import hash
+from src.utils.text import buildServiceId
 from src.utils.ds import Sqlite3Datasource
+from src.translator import usageInfo as usage
 import src.storage.ds_sqlite3 as storage
-import logging,logging.config,os,time
+import logging,logging.config,os
 
 APP_NAME = "transcat"
 
@@ -31,12 +32,12 @@ def initTranslators(config):
   global translators
   services = []
   serviceMap = {}
-  month = time.strftime('%Y-%m')
+  # month = time.strftime('%Y-%m')
   for item in config["services"]:
     serviceType = item['type'].lower()
     klass = TRANSLATORS.get(serviceType)
     if not klass:
-      raise Exception(f'Available services type are [ {TRANSLATORS.keys() }]')
+      raise Exception(f'Invalid service type: {serviceType}, available services type are [ {TRANSLATORS.keys() }]')
     
     service = klass(
       name=item['name'],
@@ -47,7 +48,9 @@ def initTranslators(config):
       proxy=item.get('proxy') or None
     )
 
-    serviceId = hash.md5(service.name + '_' + service.type + '_' + month)
+    # serviceId = hash.md5(service.name + '_' + service.type + '_' + month)
+    serviceId = buildServiceId(service.name,service.type)
+    print(serviceId)
     if serviceMap.get(serviceId):
       raise Exception(f'duplicate key {service.name}')
     serviceMap[serviceId] = service
@@ -77,9 +80,9 @@ def initServiceUsage(serviceMap):
     rows = storage.findUsageByServiceIds(conn,serviceIds)
     for item in rows:
       row = dict(item)
-      service = serviceMap.get(row['service_id']) or None
-      if service:
-        service.usage = row['usage']
+      sid = row['service_id']
+      info = usage.getUsageInfoBySid(sid)
+      info.updateUsage(row['usage'])
 
 def initChooser(translators,mode,rule):
   klass = MODE_DICT.get(mode)

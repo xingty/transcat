@@ -1,4 +1,5 @@
-
+import time
+from . import hash
 def splitByMark(text,textSize,maxLenOfCharacters,mark={'\n'}):
   left = 0
   right = 0
@@ -27,3 +28,8 @@ def splitByMark(text,textSize,maxLenOfCharacters,mark={'\n'}):
   texts.append(text[left:textSize])
 
   return texts
+
+
+def buildServiceId(name,type):
+  query = f'{name}_{type}_{time.strftime("%Y-%m")}'
+  return hash.md5(query)
