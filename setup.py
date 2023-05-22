@@ -16,7 +16,7 @@ setup(
   description='A tool for managing translation services',
   author='Bigbyto',
   author_email='bigbyto@gmail.com',
-  url='https://github.com/bigbyto/transcat',
+  url='https://github.com/xingty/transcat',
   install_requires=requirements,
   python_requires='>=3.7',
   packages=find_packages(),
