@@ -29,6 +29,8 @@ LANGUAGE = {
 class Tencent(BaseTranslator):
   def __init__(self, name,appKey,appId,limit=-1, weight=1, proxy=False):
     super().__init__(name, appKey,appId,limit, weight, proxy)
+    assert appId is not None and len(appId) > 0
+    assert appKey is not None and len(appKey) > 0
     self.region = 'ap-guangzhou'
     self.type = 'tencent'
     self.apiUrl = 'https://tmt.tencentcloudapi.com'
