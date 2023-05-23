@@ -1,5 +1,5 @@
-from src.utils.thread_safe_counter import ThreadSafeCounter
 import threading
+from .exception import TranslactionException,ExceptionType
 
 class BaseTranslator():
   def __init__(self,name,appKey,appId,limit=-1,weight=1,proxy=False):
@@ -7,18 +7,14 @@ class BaseTranslator():
     self.appId = appId
     self.appKey = appKey
     self.weight = weight
-    self.activeConnections = 0
-    self.usage = 0
     self.proxy = proxy
     self.limit = limit
-    
-    self.lock = threading.Lock()
     self.ratelimiter = None
     self._languageMap = self.supportedLanguage()
   
   def translate(self,text,src,dst):
     if not self.support(src,dst):
-      raise Exception(f'Language not supported {src} -> {dst} by {self.name}')
+      raise TranslactionException(None,ExceptionType.SERVICE_NOT_FOUND)
 
     return self.doTranslate(text,src,dst)
 
@@ -37,15 +33,6 @@ class BaseTranslator():
   
   def tryAcquire(self):
     return self.ratelimiter == None or self.ratelimiter.acquire()
-
-  def updateState(self,size): 
-    """
-    Thread safe method
-    Update the state of the translator
-    """
-    with self.lock:
-      self.usage += size
-      self.activeConnections += 1
   
   def maxCharacterAtOnce(self):
     return 10000
