@@ -18,8 +18,8 @@ LANGUAGE = {
 class Baidu(BaseTranslator):
   def __init__(self, name,appKey,appId=None,limit=-1, weight=1, proxy=False):
     super().__init__(name,appKey,appId,limit, weight, proxy)
-    assert appId
-    assert appKey
+    assert appId is not None and len(appId) > 0
+    assert appKey is not None and len(appKey) > 0
     self.type = 'baidu'
     self.apiUrl = 'https://fanyi-api.baidu.com/api/trans/vip/translate'
     self.mapping = {

@@ -1,6 +1,7 @@
-import time,logging
+import time,logging,threading
 from src.utils.text import splitByMark
 from src.translator.exception import TranslactionException,ExceptionType
+from src.translator import usageInfo as usage
 
 logger = logging.getLogger('translate')
 
@@ -8,6 +9,7 @@ class TranslateEngine():
   def __init__(self,service,mode) -> None:
     self.mode = mode
     self.service = service
+    self.lock = threading.Lock()
 
   def translate(self,text,src,dst) -> dict:
     count = 0
@@ -81,7 +83,7 @@ class TranslateEngine():
         count += 1
         time.sleep(0.1)
       finally:
-        translator.updateState(len(paragraph))
+        usage.updateUsageInfo(translator.name,translator.type,len(paragraph))
 
     if result:
       result.update({

@@ -4,10 +4,11 @@ from src.translator import TRANSLATORS
 from src.utils.ratelimiter import RATELIMITERS
 from src.translate_engine import TranslateEngine
 from flask import Flask
-from src.utils import hash
+from src.utils.text import buildServiceId
 from src.utils.ds import Sqlite3Datasource
+from src.translator import usageInfo as usage
 import src.storage.ds_sqlite3 as storage
-import logging,logging.config,os,time
+import logging,logging.config,os,sys
 
 APP_NAME = "transcat"
 
@@ -31,12 +32,12 @@ def initTranslators(config):
   global translators
   services = []
   serviceMap = {}
-  month = time.strftime('%Y-%m')
   for item in config["services"]:
     serviceType = item['type'].lower()
     klass = TRANSLATORS.get(serviceType)
     if not klass:
-      raise Exception(f'Available services type are [ {TRANSLATORS.keys() }]')
+      print(f'Available rate translate type are [ {TRANSLATORS.keys() }]')
+      sys.exit(0)
     
     service = klass(
       name=item['name'],
@@ -47,9 +48,10 @@ def initTranslators(config):
       proxy=item.get('proxy') or None
     )
 
-    serviceId = hash.md5(service.name + '_' + service.type + '_' + month)
+    serviceId = buildServiceId(service.name,service.type)
     if serviceMap.get(serviceId):
-      raise Exception(f'duplicate key {service.name}')
+      print(f'duplicate key {service.name}')
+      sys.exit(0)
     serviceMap[serviceId] = service
 
     if serviceType == "tencent":
@@ -61,7 +63,8 @@ def initTranslators(config):
     if rate:
       limiter = RATELIMITERS.get(rate.type)
       if not limiter:
-        raise Exception(f'Available rate limiter type are [ {RATELIMITERS.keys() }]')
+        print(f'Available rate limiter type are [ {RATELIMITERS.keys() }]')
+        sys.exit(0)
       service.rateLimiter = limiter(rate.capacity,rate.window)
 
     services.append(service)
@@ -77,25 +80,28 @@ def initServiceUsage(serviceMap):
     rows = storage.findUsageByServiceIds(conn,serviceIds)
     for item in rows:
       row = dict(item)
-      service = serviceMap.get(row['service_id']) or None
-      if service:
-        service.usage = row['usage']
+      sid = row['service_id']
+      info = usage.getUsageInfoBySid(sid)
+      info.updateUsage(row['usage'])
 
 def initChooser(translators,mode,rule):
   klass = MODE_DICT.get(mode)
   if not klass:
-    raise Exception(f'Available rate limiter type are [ {MODE_DICT.keys() }]')
+    print(f'unknown mode: {mode}')
+    sys.exit(0)
 
   chooser = None
   if mode == 'select':
     chooser = klass(translators)
   elif mode == 'load-balance':
     if not rule:
-      raise Exception(f'Missing key [ load-balance-rule ]')
+      print(f'Missing key [ load-balance-rule ]')
+      sys.exit(0)
     
     rule_klass = RULES.get(rule) or None
     if not rule_klass:
-      raise Exception(f'Available rule type are [ {RULES.keys() }]')
+      print(f'Available rule type are [ {RULES.keys() }]')
+      sys.exit(0)
     
     chooser = klass(translators,rule_klass())
 

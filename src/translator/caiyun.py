@@ -1,6 +1,6 @@
 from .base_translator import BaseTranslator
 from src.translator.exception import TranslactionException,ExceptionType
-import requests,json,langdetect
+import requests,json
 
 LANGUAGE = {
   "en": ["zh-hans","zh","zh-hant"],
@@ -13,6 +13,7 @@ LANGUAGE = {
 class Caiyun(BaseTranslator):
   def __init__(self,name,appKey,appId=None,limit=-1,weight=1,proxy=False):
     super().__init__(name,appKey,appId,limit,weight,proxy)
+    assert appKey is not None and len(appKey) > 0
     self.type = "caiyun"
     self.apiUrl = 'http://api.interpreter.caiyunai.com/v1/translator'
     self._headers = {
