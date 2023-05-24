@@ -8,7 +8,13 @@
     {
       "name": "google1",
       "type": "googlex",
-      "app_key": "key",
+      "proxy": "http://127.0.0.1:7890",
+      "weight": 3,
+      "limit": 500000
+    },
+    {
+      "name": "bing1",
+      "type": "bingx",
       "proxy": "http://127.0.0.1:7890",
       "weight": 3,
       "limit": 500000

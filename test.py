@@ -74,8 +74,8 @@ def testDict():
   print(data)
   print(data2)
 
-testDict()
-testObject()
+# testDict()
+# testObject()
 
 import threading,time
 
@@ -177,4 +177,14 @@ def testDict():
   d.update(e)
   print(d)
 
-# testDict()
+
+def testBingx():
+  from src.translator.bingx import BingX
+  bingx = BingX('bing1',proxy='http://127.0.0.1:7890')
+  data = bingx.translate('hello,world','en','zh-hant')
+  print(data)
+
+  data = bingx.translate('hello,python','en','zh-hans')
+  print(data)
+
+testBingx()

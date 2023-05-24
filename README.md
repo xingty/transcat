@@ -8,15 +8,16 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
 
 ## 支持的服务
 
-Google翻译 ✅
+| 服务名称 | 支持情况 | 需要申请API Key | 申请指南                                                     |
+| -------- | -------- | --------------- | ------------------------------------------------------------ |
+| Google   | 是       | 否              |                                                              |
+| 微软翻译 | 是       | 否              |                                                              |
+| 百度翻译 | 是       | 是              | [点击进入](https://bobtranslate.com/service/translate/baidu.html) |
+| 彩云小译 | 是       | 是              | [点击进入](https://bobtranslate.com/service/translate/caiyun.html) |
+| 阿里翻译 | Working  | 是              | [点击进入](https://bobtranslate.com/service/translate/ali.html) |
+| OpenAI   | Working  | 是              | [点击进入](https://bobtranslate.com/service/translate/openai.html) |
 
-腾讯翻译君 ✅
 
-百度翻译 ✅
-
-彩云小译 ✅
-
-微软翻译
 
 ## 配置
 
@@ -212,8 +213,6 @@ transcat提供了一些REST-API，可以通过API更改mode等，目前支持的
 Web-UI
 
 选择某个服务翻译的API
-
-微软翻译
 
 
 
