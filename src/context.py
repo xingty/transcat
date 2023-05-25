@@ -7,8 +7,9 @@ from flask import Flask
 from src.utils.text import buildServiceId
 from src.utils.ds import Sqlite3Datasource
 from src.translator import usageInfo as usage
+from logging.handlers import RotatingFileHandler
 import src.storage.ds_sqlite3 as storage
-import logging,logging.config,os,sys
+import logging.config,os,sys
 
 APP_NAME = "transcat"
 
@@ -17,15 +18,18 @@ translateEngine: TranslateEngine = None
 translators = None
 datasource: Sqlite3Datasource = None
 
-def initLogger():
-  if not os.path.exists('logs'):
-    os.mkdir('logs')
-  
-  logging.config.fileConfig('assets/logging.conf')
+def initLogger(location: str):
+  file = location + '/transcat.log'
+  logger = logging.getLogger()
+  logger.setLevel(logging.INFO)
+  formatter = logging.Formatter("%(asctime)s - %(name)s.%(funcName)s - %(levelname)s - %(message)s")
+  handler = RotatingFileHandler(file, maxBytes=10485760, backupCount=5)
+  handler.setFormatter(formatter)
+  logger.addHandler(handler)
 
-def initDB():
+def initDB(location):
   global datasource
-  datasource = Sqlite3Datasource("assets/data.db")
+  datasource = Sqlite3Datasource(location + "/data.db")
   datasource.init("assets/schema.sql")
 
 def initTranslators(config):
@@ -121,9 +125,17 @@ def createAppContext(config):
   applicationContext = Flask(APP_NAME)
   return applicationContext
 
+def initAssetsDir(path: str):
+  path = path if path else (os.path.expanduser('~') + '/.logs/transcat')
+  if not os.path.exists(path):
+    os.makedirs(path, exist_ok=True)
+
+  return path
+
 def initApplicationContext(config):
-  initDB()
-  initLogger()
+  path = initAssetsDir(config.get('assets_dir'))
+  initDB(path)
+  initLogger(path)
   translators = initTranslators(config)
   initTranslateEngine(config,translators)
   app = createAppContext(config)
