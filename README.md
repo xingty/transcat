@@ -76,6 +76,8 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
 
 * `server_port ` - 监听端口，默认8010
 
+* `assets_dir`: 资源文件输出目录，比如log、sqlite3的数据库文件等
+
 * `mode`  工作模式
   * **select** - 手动选择翻译服务(services)中的一个
   * **load-balance** - 程序自动负载均衡选择翻译服务，支持3种负载均衡策略
