@@ -1,7 +1,8 @@
-import hashlib, hmac, json, time,requests
+import hashlib, hmac, json, time
 from datetime import datetime
 from .base_translator import BaseTranslator
 from src.translator.exception import TranslactionException,ExceptionType
+from src.utils import http
 
 LANGUAGE = {
   "auto": ["any"],
@@ -63,20 +64,26 @@ class Tencent(BaseTranslator):
       'X-TC-Region': self.region,
     }
 
-    response = requests.post(self.apiUrl, headers=headers, data=json.dumps(payload))
-    if not response.ok:
-      data = { 'code': response.status_code,'text': response.text }
-      raise TranslactionException(self.type,ExceptionType.NETWORK,data)
+    try:
+      response = http.post(
+        url=self.apiUrl,
+        headers=headers,
+        data=json.dumps(payload),
+        proxy=self.proxy
+      )
 
-    data = json.loads(response.text)
-    if 'Response' in data and 'Error' in data['Response']:
-      err = data['Response']['Error']
-      eType = ExceptionType.REQUEST_LIMIT if err['Code'] == 'RequestLimitExceeded' else ExceptionType.UNKNOWN
-      raise TranslactionException(self.type,eType,data)
-
-    return {
-      "target_text": data['Response']['TargetText']
-    }
+      data = response.json()
+      if 'Response' in data and 'Error' in data['Response']:
+        err = data['Response']['Error']
+        eType = ExceptionType.REQUEST_LIMIT if err['Code'] == 'RequestLimitExceeded' else ExceptionType.UNKNOWN
+        raise TranslactionException(self.type,eType,data)
+      
+      return {
+        "target_text": data['Response']['TargetText']
+      }
+      
+    except http.NetworkException as e:
+      raise TranslactionException(self.type,ExceptionType.NETWORK,e.message)
 
   def getAuthorization(self,timestamp,params) -> str:
     signed_headers = "content-type;host"

@@ -33,7 +33,7 @@ def translate(params,showEngine,useCache=False) -> dict:
       data['target_text'] = f'{content} - (by {data["engine"]})'
     return data
   except Exception as e:
-    raise ServiceException(ErrorCode.FAILED,e.data)
+    raise ServiceException(ErrorCode.FAILED,'server internal error')
 
 def _getFromCache(text,dst):
   hashId = hash.md5(text + '_' + dst)

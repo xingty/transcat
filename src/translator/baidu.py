@@ -1,6 +1,7 @@
-import hashlib, json, time,requests
+import hashlib, time
 from src.translator.exception import TranslactionException,ExceptionType
 from .base_translator import BaseTranslator
+from src.utils import http
 
 LANGUAGE = {
   "en": ["zh", "ja", "ko", "fr", "es", "it", "de", "ru", "pt", "vi", "ar"],
@@ -43,7 +44,7 @@ class Baidu(BaseTranslator):
       _dst = self.mapping.get(dst)
 
     salt = str(round(time.time() * 1000))
-    raw = self.appid + text + salt + self.appKey
+    raw = self.appId + text + salt + self.appKey
     sign = hashlib.md5(raw.encode('utf8')).hexdigest()
     params = {
         'q': text,
@@ -54,19 +55,19 @@ class Baidu(BaseTranslator):
         'sign': sign
     }
 
-    response = requests.get(self.apiUrl, params=params)
-    if not response.ok:
-      data = { 'code': response.status_code,'text': response.text }
-      raise TranslactionException(self.type,ExceptionType.NETWORK,data)
-
-    data = json.loads(response.text)
-    if 'error_code' in data:
-      etype = ExceptionType.REQUEST_LIMIT if '54003' == data['error_code'] else ExceptionType.UNKNOWN
-      raise TranslactionException(self.type,etype,data)
-
-    return {
-      "target_text": data['trans_result'][0]['dst']
-    }
+    try:
+      response = http.get(self.apiUrl, params=params,proxy=self.proxy)
+      data = response.json()
+      if 'error_code' in data:
+        etype = ExceptionType.REQUEST_LIMIT if '54003' == data['error_code'] else ExceptionType.UNKNOWN
+        raise TranslactionException(self.type,etype,data)
+      
+      return {
+        "target_text": data['trans_result'][0]['dst']
+      }
+    except http.NetworkException as e:
+      raise TranslactionException(self.type,ExceptionType.NETWORK,None)
+    
   
   def maxCharacterAtOnce(self):
     # http://api.fanyi.baidu.com/doc/21

@@ -1,4 +1,3 @@
-import threading
 from .exception import TranslactionException,ExceptionType
 
 class BaseTranslator():

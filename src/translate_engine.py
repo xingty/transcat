@@ -47,7 +47,7 @@ class TranslateEngine():
     index = 0
     count = 0
     size = len(texts)
-    while index < size and count < 5:
+    while index < size and count < 1:
       # 每个翻译服务会有不同的限流策略,用之前需要确定当前还有限额
       if not translator.tryAcquire():
         time.sleep(0.05)

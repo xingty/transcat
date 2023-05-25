@@ -1,6 +1,7 @@
 from .base_translator import BaseTranslator
 from src.translator.exception import TranslactionException,ExceptionType
-import requests,json
+from src.utils import http
+import json
 
 LANGUAGE = {
   "en": ["zh-hans","zh","zh-hant"],
@@ -16,7 +17,7 @@ class Caiyun(BaseTranslator):
     assert appKey is not None and len(appKey) > 0
     self.type = "caiyun"
     self.apiUrl = 'http://api.interpreter.caiyunai.com/v1/translator'
-    self._headers = {
+    self.headers = {
       'content-type': "application/json",
       'x-authorization': "token " + appKey,
     }
@@ -34,29 +35,26 @@ class Caiyun(BaseTranslator):
       "trans_type" : transType,
       "request_id" : "demo",
     }
-    response = requests.request(
-      "POST", 
-      self.apiUrl, 
-      data=json.dumps(payload), 
-      headers=self._headers
-    )
 
-    if not response.ok:
-      data = {
-        'code': response.status_code,
-        'text': response.text,
-        'trans_type': f'src -> {src}, dst -> {dst}, trans_type -> {transType}, text -> {text}'
+    try:
+      response = http.post(
+        url=self.apiUrl, 
+        data=json.dumps(payload), 
+        headers=self.headers,
+        proxy=self.proxy
+      )
+
+      data = response.json()
+      if 'target' not in data:
+        data['trans_type'] = f'src -> {src}, dst -> {dst}, trans_type -> {transType}'
+        raise TranslactionException(self.type,ExceptionType.UNKNOWN,data)
+
+      return {
+        "target_text": data['target'][0],
       }
-      raise TranslactionException(self.type,ExceptionType.NETWORK,data)
+    except http.NetworkException as e:
+      raise TranslactionException(self.type,ExceptionType.NETWORK,e.message)
 
-    data = json.loads(response.text)
-    if 'target' not in data:
-      data['trans_type'] = f'src -> {src}, dst -> {dst}, trans_type -> {transType}'
-      raise TranslactionException(self.type,ExceptionType.UNKNOWN,data)
-
-    return {
-      "target_text": data['target'][0],
-    }
 
   def maxCharacterAtOnce(self):
     return 2000

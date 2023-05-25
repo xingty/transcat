@@ -1,6 +1,7 @@
 from .base_translator import BaseTranslator
 from src.translator.exception import TranslactionException,ExceptionType
 import requests
+from src.utils import http
 
 LANGUAGE = {
   "auto": ["any"],
@@ -54,28 +55,19 @@ class GoogleX(BaseTranslator):
       _dst = self.mapping[dst]
 
     url = f'{self.apiUrl}&sl={_src}&tl={_dst}'
-    proxies = None
-    if self.proxy:
-      proxies = { "http": self.proxy, "https": self.proxy }
+    try:
+      data=f"q={requests.utils.quote(text)}"
+      res = http.post(url,data,self.headers,self.proxy)
 
-    res = requests.post(
-      url,
-      headers=self.headers,
-      data=f"q={requests.utils.quote(text)}",
-      proxies=proxies
-    )
+      trans = "".join(
+        [sentence.get("trans", "") for sentence in res.json()["sentences"]],
+      )
 
-    if not res.ok:
-      data = { 'code': res.status_code,'text': res.text }
-      raise TranslactionException(self.type,ExceptionType.NETWORK,data)
-    
-    trans = "".join(
-      [sentence.get("trans", "") for sentence in res.json()["sentences"]],
-    )
-
-    return {
-      "target_text": trans
-    }
+      return {
+        "target_text": trans
+      }
+    except http.NetworkException as e:
+      raise TranslactionException(self.type,ExceptionType.NETWORK,None)
 
   def maxCharacterAtOnce(self):
     return 3000
