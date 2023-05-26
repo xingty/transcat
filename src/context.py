@@ -126,7 +126,7 @@ def createAppContext(config):
   return applicationContext
 
 def initAssetsDir(path: str):
-  path = path if path else (os.path.expanduser('~') + '/.logs/transcat')
+  path = path if path else 'transcat'
   if not os.path.exists(path):
     os.makedirs(path, exist_ok=True)
 
