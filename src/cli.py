@@ -2,6 +2,9 @@ import argparse,os,json
 from src.context import initApplicationContext
 from waitress import serve
 
+ENV_PORT="TRANSCAT_PORT"
+ENV_HOST="TRANSCAT_HOST"
+
 def loadConfig(options):
   path = options.config
   if not os.path.exists(path):
@@ -26,8 +29,8 @@ def startWebServer(app,config):
   from src.web.api import translation
   app.register_blueprint(translation.bp)
 
-  address = config.get('server_address','127.0.0.1')
-  port = config.get('server_port',8010)
+  address = os.getenv(ENV_HOST) or config.get('server_address','127.0.0.1')
+  port = os.getenv(ENV_PORT) or config.get('server_port',8010)
   print(f'transcat is running on {address}:{port}')
   serve(app,host=address,port=port)
   # app.run(host=address,port=port,debug=True,threaded=True)

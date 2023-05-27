@@ -12,6 +12,7 @@ import src.storage.ds_sqlite3 as storage
 import logging.config,os,sys
 
 APP_NAME = "transcat"
+TRANSCAT_ASSETS_DIR = "TRANSCAT_ASSETS"
 
 applicationContext: Flask = None
 translateEngine: TranslateEngine = None
@@ -133,7 +134,8 @@ def initAssetsDir(path: str):
   return path
 
 def initApplicationContext(config):
-  path = initAssetsDir(config.get('assets_dir'))
+  path = os.getenv(TRANSCAT_ASSETS_DIR) or config.get('assets_dir')
+  path = initAssetsDir(path)
   initDB(path)
   initLogger(path)
   translators = initTranslators(config)
