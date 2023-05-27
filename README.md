@@ -1,21 +1,21 @@
 # transcat
 
-transcat是一个翻译服务管理工具，主要任务是协调和管理多个不同的翻译服务(如Google，彩云小译，腾讯翻译君等)。transcat的特色功能是**负载均衡**，你可以自由组合不同的翻译服务来实现负载均衡。
+transcat是一个翻译服务管理工具，主要任务是协调和管理多个不同的翻译服务(如Google，彩云小译，腾讯翻译君等)。特色功能是**负载均衡**，可以自由组合不同的翻译服务来实现负载均衡。
 
-transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置请参考: [沉浸式翻译API](#与沉浸式翻译(Immersive translate)集成)
+transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置请参考: [沉浸式翻译API](#与沉浸式翻译集成)
 
 ![](assets/example.png)
 
 ## 支持的服务
 
-| 服务名称 | 支持情况 | 需要申请API Key | 申请指南                                                     |
-| -------- | -------- | --------------- | ------------------------------------------------------------ |
-| Google   | 是       | 否              |                                                              |
-| 微软翻译 | 是       | 否              |                                                              |
-| 百度翻译 | 是       | 是              | [点击进入](https://bobtranslate.com/service/translate/baidu.html) |
-| 彩云小译 | 是       | 是              | [点击进入](https://bobtranslate.com/service/translate/caiyun.html) |
-| 阿里翻译 | Working  | 是              | [点击进入](https://bobtranslate.com/service/translate/ali.html) |
-| OpenAI   | Working  | 是              | [点击进入](https://bobtranslate.com/service/translate/openai.html) |
+| 服务名称 | 支持情况 | 需要申请API Key | 限流建议(cap/window) | 申请指南                                                     |
+| -------- | -------- | --------------- | -------------------- | ------------------------------------------------------------ |
+| Google   | 是       | 否              | 10/1                 |                                                              |
+| 微软翻译 | 是       | 否              | 5/1                  |                                                              |
+| 百度翻译 | 是       | 是              | 10/1(高级认证)       | [点击进入](https://bobtranslate.com/service/translate/baidu.html) |
+| 彩云小译 | 是       | 是              | 10/1                 | [点击进入](https://bobtranslate.com/service/translate/caiyun.html) |
+| 阿里翻译 | Working  | 是              |                      | [点击进入](https://bobtranslate.com/service/translate/ali.html) |
+| OpenAI   | Working  | 是              |                      | [点击进入](https://bobtranslate.com/service/translate/openai.html) |
 
 
 
@@ -76,7 +76,7 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
 
 * `server_port ` - 监听端口，默认8010
 
-* `assets_dir`: 资源文件输出目录，比如log、sqlite3的数据库文件等
+* `assets_dir`: 资源文件输出目录，比如log、sqlite3的数据库文件等，docker环境下此参数会被忽略。
 
 * `mode`  工作模式
   * **select** - 手动选择翻译服务(services)中的一个
@@ -107,13 +107,13 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
 
 ## 启动服务
 
-**从源码启动**
+### 从源码启动
 
 ```shell
 python flight.py --config config.json
 ```
 
-**安装到本地**
+### 安装到本地
 
 请先从release中下载最新版本到本地，执行下面命令
 
@@ -126,9 +126,71 @@ transcat --config config.json
 
 上面两种方式，本地必须先安装python，推荐使用最新版。请把上面命令中的python替换为你实际本地的python版本，最低支持到3.7.0。
 
+### 从Docker启动
+
+**获取镜像**
+
+你可以通过Docker Hub和源代码构建的方式获得镜像
+
+* 从Docker Hub获取
+
+  transcat的镜像支持x86-64以及ARM-64架构，所以Apple Silicon的用户可以放心从Docker hub中下载镜像。
+
+  transcat的docker地址是: [点击进入](https://hub.docker.com/repository/docker/bigbyto/transcat)，使用下面命令从docker hub中下载镜像。
+
+  ```shell
+  docker pull bigbyto/transcat:${version}
+  ```
+
+  具体支持的version请进入docker hub中查看。
+
+* 从源码中构建镜像
+
+  ```shell
+  # Clone最新的代码
+  git clone https://github.com/xingty/transcat
+  
+  # 进入transcat
+  cd transcat
+  
+  # 构建镜像,${version}替换为具体的版本，可参考setup.py中的version
+  docker build -t bigbyto/transcat:${version}
+  ```
+
+  
+
+**从镜像构建并启动容器**
+
+```shell
+docker run --name transcat -e TRANSCAT_PORT=8020 -dp 8020:8020 --mount "type=bind,src=/var/data/transcat/,target=/var/data/transcat/" bigbyto/transcat:${version}
+```
+
+上面的参数分别含义如下:
+
+* `--name` -  容器的名称，可以随意指定
+* `-e TRANSCAT_PORT=8020` - 容器内服务监听的端口，该参数优先级高于`config.json`中的`server_port`。
+* `-dp` - 后台启动容器，且映射本机的8020到容器的8020。请注意容器的端口必须和`TRANSCAT_PORT`一致。
+* `--mount` - src是本地存放配置文件的目录，**config.json放在这个目录下,请【不要】改target**。
+
+**启动容器**
+
+当容器存在且处于停止状态，可通过下面命令重新启动容器
+
+```shell
+docker container start transcat
+```
+
+上面命令中的"transcat"为创建容器时的名称。
+
+**配置代理**
+
+请注意，使用容器的方式启动，意味着本机和容器的网络环境互相隔离，如果你的代理位于本机，必须要打通本机和容器的网络环境才能生效。
+
+如果要在容器中使用transcat且需要配置HTTP代理，推荐把代理也容器化并置于同一个网络环境中，这样可以省去不少的麻烦。
 
 
-## 与沉浸式翻译(Immersive translate)集成
+
+## 与沉浸式翻译集成
 
 目前沉浸式翻译没有直接支持transcat，不过因为它支持DeeplX，transcat对它DeeplX的接口做了兼容，使用步骤如下:
 
@@ -169,9 +231,9 @@ transcat提供了一些REST-API，可以通过API更改mode等，目前支持的
 
   ```json
   {
-  	"text": "hello world",
-  	"source_lang": "en",
-  	"target_lang": "zh"
+    "text": "hello world",
+    "source_lang": "en",
+    "target_lang": "zh"
   }
 
 * Response
