@@ -26,7 +26,6 @@ setup(
     ]
   },
   data_files=[
-    ('assets',['assets/schema.sql','assets/logging.conf']),
+    ('assets',['assets/schema.sql']),
   ]
-
 )
