@@ -280,5 +280,6 @@ Web-UI
 
 
 
+## LICENSE
 
-
+[LICENSE](https://github.com/xingty/transcat/blob/main/LICENSE.md)
