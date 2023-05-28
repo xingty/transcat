@@ -119,8 +119,9 @@ class BingX(BaseTranslator):
     result = res.json()
     if 'statusCode' in result:
       etype = ExceptionType.UNKNOWN
-      if ExceptionType.REQUEST_LIMIT == etype:
+      if result['statusCode'] == 429:
         self.abuseHelper.counter.increment()
+        etype = ExceptionType.REQUEST_LIMIT
       raise TranslactionException(self.type,etype,result)
 
     translations = result[0].get('translations')
