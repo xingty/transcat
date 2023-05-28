@@ -162,7 +162,11 @@ transcat --config config.json
 **从镜像构建并启动容器**
 
 ```shell
-docker run --name transcat -e TRANSCAT_PORT=8020 -dp 8020:8020 --mount "type=bind,src=/var/data/transcat/,target=/var/data/transcat/" bigbyto/transcat:${version}
+docker run --name transcat \
+-e TRANSCAT_PORT=8020 \
+-dp 8020:8020 \
+--mount "type=bind,src=/var/data/transcat/,target=/var/data/transcat/" \
+bigbyto/transcat:${version}
 ```
 
 上面的参数分别含义如下:
