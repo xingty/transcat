@@ -7,6 +7,7 @@ from flask import Flask
 from src.utils.text import buildServiceId
 from src.utils.ds import Sqlite3Datasource
 from src.translator import usageInfo as usage
+from src.configuration import Configuration
 from logging.handlers import RotatingFileHandler
 import src.storage.ds_sqlite3 as storage
 import logging.config,os,sys
@@ -18,6 +19,7 @@ applicationContext: Flask = None
 translateEngine: TranslateEngine = None
 translators = None
 datasource: Sqlite3Datasource = None
+configuration: Configuration = None
 
 def initLogger(location: str):
   file = location + '/transcat.log'
@@ -33,11 +35,11 @@ def initDB(location):
   datasource = Sqlite3Datasource(location + "/data.db")
   datasource.init("assets/schema.sql")
 
-def initTranslators(config):
+def initTranslators(config: Configuration):
   global translators
   services = []
   serviceMap = {}
-  for item in config["services"]:
+  for item in config.services:
     serviceType = item['type'].lower()
     klass = TRANSLATORS.get(serviceType)
     if not klass:
@@ -112,16 +114,16 @@ def initChooser(translators,mode,rule):
 
   return chooser
 
-def initTranslateEngine(config,translators):
-  mode = config['mode']
-  rule = config.get('load-balance-rule') or None
+def initTranslateEngine(config: Configuration,translators: list):
+  mode = config.mode
+  rule = config.loadbalanceRule
   chooser = initChooser(translators,mode,rule)
 
   global translateEngine  
   translateEngine = TranslateEngine(chooser,mode)
   return translateEngine
 
-def createAppContext(config):
+def createAppContext(config: Configuration):
   global applicationContext
   applicationContext = Flask(APP_NAME)
   return applicationContext
@@ -133,9 +135,14 @@ def initAssetsDir(path: str):
 
   return path
 
-def initApplicationContext(config):
-  path = os.getenv(TRANSCAT_ASSETS_DIR) or config.get('assets_dir')
-  path = initAssetsDir(path)
+def initConfiguration(config: dict):
+  global configuration
+  configuration = Configuration(config)
+
+  return configuration
+
+def initApplicationContext(config: Configuration):
+  path = initAssetsDir(config.assetsDir)
   initDB(path)
   initLogger(path)
   translators = initTranslators(config)
