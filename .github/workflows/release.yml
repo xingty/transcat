@@ -30,9 +30,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install setuptools
           python setup.py sdist
-      - name: Show resources
-        run: | 
-          ls -l dist
       - name: release
         uses: svenstaro/upload-release-action@v2
         with:
