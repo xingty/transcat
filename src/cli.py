@@ -1,6 +1,7 @@
 import argparse,os,json
 from src import context
 from waitress import serve
+from flask import Flask
 
 def loadConfig(options):
   path = options.config
@@ -22,9 +23,10 @@ def getOptions():
 
   return parser.parse_args()
 
-def startWebServer(app,config):
-  from src.web.api import translation
+def startWebServer(app: Flask,config):
+  from src.web.api import translation,server
   app.register_blueprint(translation.bp)
+  app.register_blueprint(server.bp)
 
   address = config.serverAddress
   port = config.serverPort
