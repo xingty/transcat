@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS translate_history;
+DROP TABLE IF EXISTS service_usage;
 
 CREATE TABLE "translate_history" (
 	"id" integer,
