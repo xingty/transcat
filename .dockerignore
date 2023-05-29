@@ -1,7 +1,6 @@
 Dockerfile*
 docker-compose*
 LICENSE
-test_books
 README*
 .dockerignore
 .git
