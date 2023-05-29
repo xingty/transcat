@@ -16,6 +16,14 @@ def deeplxAdapter():
     "alternatives": []
   }
 
+@bp.route('/translate/<engine>',methods=['POST'])
+def translate(engine):
+  useCache = not (request.args.get('disable_cache') == '1')
+  data = service.translateByService(engine,request.json,useCache)
+
+  return data
+
+
 @bp.route('/translate/mode/switch',methods=['PUT'])
 def switchMode():
   mode = request.form.get('mode')

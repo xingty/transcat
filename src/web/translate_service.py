@@ -48,6 +48,39 @@ def _getFromCache(text,dst):
     'engine': record['engine'],
   }
 
+def translateByService(serviceName,params,useCache=False) -> dict:
+  assertx.isTrue('source_lang' in params,'Missing parameter: [ source_lang ]')
+  assertx.isTrue('target_lang' in params,'Missing parameter: [ target_lang ]')
+  text = params['text']
+  assertx.notEmpty(text,'[ text ] must not be empty')
+
+  data = None
+  if (useCache):
+    data = _getFromCache(text,params['target_lang'])
+  
+  if data is not None:
+    return data
+
+  translator = None
+  for item in translators:
+    if item.type == serviceName:
+      translator = item
+      break
+  
+  if translator is None:
+    raise ServiceException(ErrorCode.FAILED,'service not found')
+  
+  src = params['source_lang'].lower()
+  dst = params['target_lang'].lower()
+
+  data = translator.translate(text,src,dst)
+  return {
+    'src': src,
+    'dst': dst,
+    'target_text': data['target_text'],
+  }
+
+
 def switchMode(mode,rule): 
   if mode not in MODE_DICT:
     raise ServiceException(ErrorCode.FAILED,f'Invalid mode [ {mode} ], available modes: {MODE_DICT.keys()}')
