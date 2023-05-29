@@ -3,6 +3,7 @@
 FROM python:3.10-alpine
 
 ENV TRANSCAT_ASSETS="/var/data/transcat"
+ENV RESIDE="docker"
 
 WORKDIR /app
 
