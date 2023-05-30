@@ -1,7 +1,7 @@
 # from distutils.core import setup, find_packages
 from setuptools import setup,find_packages
 
-VERSION = '0.0.5'
+VERSION = '0.1.0'
 
 requirements = [
   'flask',
