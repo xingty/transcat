@@ -8,16 +8,15 @@ class ErrorCode(Enum):
   FAILED = 500
 
 class ServiceException(Exception):
-  def __init__(self,code,message, *args: object) -> None:
+  def __init__(self,code: ErrorCode,message: str, *args: object) -> None:
     super().__init__(*args)
     self.code = code
     self.message = message
 
 
-def restExceptionHandler(e):
-  ec: ErrorCode = e.code
+def restExceptionHandler(e: ServiceException):
   response = {
-    'code': ec.value,
+    'code': e.code.value,
     'message': e.message
   }
 
