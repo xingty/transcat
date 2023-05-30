@@ -25,8 +25,11 @@ def getOptions():
 
 def startWebServer(app: Flask,config):
   from src.web.api import translation,server
+  from src.web.exception.error import ServiceException,restExceptionHandler
+
   app.register_blueprint(translation.bp)
   app.register_blueprint(server.bp)
+  app.register_error_handler(ServiceException,restExceptionHandler)
 
   address = config.serverAddress
   port = config.serverPort

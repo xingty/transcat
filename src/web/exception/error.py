@@ -1,4 +1,6 @@
 from enum import Enum
+from flask import Response
+import json
 
 class ErrorCode(Enum):
   SUCCEED = 0
@@ -10,3 +12,14 @@ class ServiceException(Exception):
     super().__init__(*args)
     self.code = code
     self.message = message
+
+
+def restExceptionHandler(e):
+  ec: ErrorCode = e.code
+  response = {
+    'code': ec.value,
+    'message': e.message
+  }
+
+  headers = {'Content-Type': 'application/json'}
+  return Response(json.dumps(response), status=500, headers=headers)

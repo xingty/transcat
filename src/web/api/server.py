@@ -13,6 +13,8 @@ def mapServices(item: dict):
 
 services = [ mapServices(item) for item in configuration.services ]
 
+
+from src.web.exception.error import ServiceException
 @bp.route('/server/status',methods=['GET'])
 def serverState():
   config = configuration.__dict__
