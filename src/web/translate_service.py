@@ -4,6 +4,7 @@ from src.mode import MODE_DICT
 from src.context import initChooser,translators
 from .translate_history import history
 from src.context import translateEngine as engine
+from src.context import configuration
 
 def translate(params,showEngine,useCache=False) -> dict:
   assertx.isTrue('source_lang' in params,'Missing parameter: [ source_lang ]')
@@ -90,6 +91,9 @@ def switchMode(mode,rule):
   
   chooser = initChooser(translators,mode,rule)
   engine.switchMode(chooser,mode)
+  configuration.mode = mode
+  configuration.loadbalanceRule = rule
+  
 
 def selectServer(index):
   return engine.selectServer(index)
