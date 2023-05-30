@@ -3,8 +3,8 @@ import random,time,json,requests
 from src.translator.exception import TranslactionException,ExceptionType
 
 class DeepLX(BaseTranslator):
-  def __init__(self, name,limit=-1, weight=1, proxy=False):
-    super().__init__(name, None,limit,weight,proxy)
+  def __init__(self, name,appKey=None,appId=None,limit=-1, weight=1, proxy=False):
+    super().__init__(name, appKey,appId,limit,weight,proxy)
     self.apiUrl = 'https://www2.deepl.com/jsonrpc'
     self.type = 'deeplx'
     self.headers = {
@@ -20,6 +20,13 @@ class DeepLX(BaseTranslator):
     iCount = self.getICount(text)
     id = self.getRandomNumber()
     timestamp = self.getTimestamp(iCount)
+    
+    _src = src
+    if "zh-" in src:
+      _src = 'zh'
+
+    if "zh-" in dst:
+      _dst = 'zh'
 
     body = {
       "jsonrpc": "2.0",
@@ -27,8 +34,8 @@ class DeepLX(BaseTranslator):
       "params": {
         "splitting": "newlines",
         "lang": {
-            "source_lang_user_selected": src,
-            "target_lang": dst,
+            "source_lang_user_selected": _src,
+            "target_lang": _dst,
         },
         "texts": [{
           "text": text,
@@ -67,7 +74,6 @@ class DeepLX(BaseTranslator):
   
   def getTimestamp(self,iCount: int) -> int:
     ts = int(time.time() * 1000)
-    # ts = 1684036192198
     if iCount != 0:
       iCount += 1
       return ts - ts % iCount + iCount
