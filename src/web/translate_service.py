@@ -45,7 +45,7 @@ def _getFromCache(text,dst):
   return {
     'src': record['src'],
     'dst': record['dst'],
-    'target_text': record['target_text'],
+    'data': record['target_text'],
     'engine': record['engine'],
   }
 
@@ -55,9 +55,12 @@ def translateByService(serviceName,params,useCache=False) -> dict:
   text = params['text']
   assertx.notEmpty(text,'[ text ] must not be empty')
 
+  src = params['source_lang'].lower()
+  dst = params['target_lang'].lower()
+
   data = None
-  if (useCache):
-    data = _getFromCache(text,params['target_lang'])
+  if useCache:
+    data = _getFromCache(text,dst)
   
   if data is not None:
     return data
@@ -70,15 +73,23 @@ def translateByService(serviceName,params,useCache=False) -> dict:
   
   if translator is None:
     raise ServiceException(ErrorCode.FAILED,'service not found')
-  
-  src = params['source_lang'].lower()
-  dst = params['target_lang'].lower()
 
   data = translator.translate(text,src,dst)
+  if data is not None:
+    cache = data.copy()
+    cache.update({
+      'sid': translator.name,
+      'src': src,
+      'dst': dst,
+      'source_text': text,
+      'engine': translator.type
+    })
+    history.push(cache)
+
   return {
     'src': src,
     'dst': dst,
-    'target_text': data['target_text'],
+    'data': data['target_text'],
   }
 
 
