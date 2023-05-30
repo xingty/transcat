@@ -12,7 +12,7 @@ def deeplxAdapter():
   return {
     "code": 200,
     "id": 123321,
-    "data": data['target_text'],
+    "data": data['data'],
     "alternatives": []
   }
 
