@@ -38,16 +38,7 @@ def translate(params,showEngine,useCache=False) -> dict:
 
 def _getFromCache(text,dst):
   hashId = hash.md5(text + '_' + dst)
-  record = history.getByHashId(hashId)
-  if not record:
-    return None
-
-  return {
-    'src': record['src'],
-    'dst': record['dst'],
-    'data': record['target_text'],
-    'engine': record['engine'],
-  }
+  return history.getByHashId(hashId)
 
 def translateByService(serviceName,params,useCache=False) -> dict:
   assertx.isTrue('source_lang' in params,'Missing parameter: [ source_lang ]')
@@ -72,7 +63,7 @@ def translateByService(serviceName,params,useCache=False) -> dict:
       break
   
   if translator is None:
-    raise ServiceException(ErrorCode.FAILED,'service not found')
+    raise ServiceException(ErrorCode.SERVICE_NOT_FOUND,'service not found')
 
   data = translator.translate(text,src,dst)
   if data is not None:
@@ -89,7 +80,8 @@ def translateByService(serviceName,params,useCache=False) -> dict:
   return {
     'src': src,
     'dst': dst,
-    'data': data['target_text'],
+    'target_text': data['target_text'],
+    'engine': serviceName
   }
 
 
