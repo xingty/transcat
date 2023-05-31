@@ -136,7 +136,7 @@ transcat --config config.json
 
   transcat的镜像支持x86-64以及ARM-64架构，所以Apple Silicon的用户可以放心从Docker hub中下载镜像。
 
-  transcat的docker地址是: [点击进入](https://hub.docker.com/repository/docker/bigbyto/transcat)，使用下面命令从docker hub中下载镜像。
+  transcat的docker地址是: [点击进入](https://hub.docker.com/r/bigbyto/transcat)，使用下面命令从docker hub中下载镜像。
 
   ```shell
   docker pull bigbyto/transcat:${version}
