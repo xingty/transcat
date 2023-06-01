@@ -218,7 +218,7 @@ docker container start transcat
 
 ## Bob插件
 
-[点击进入](https://github.com/xingty/bob-plugin-transcat)安装transcat的bob插件爱你
+[点击进入](https://github.com/xingty/bob-plugin-transcat)安装transcat的bob插件
 
 
 
