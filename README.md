@@ -216,6 +216,12 @@ docker container start transcat
 
 
 
+## Bob插件
+
+[点击进入](https://github.com/xingty/bob-plugin-transcat)安装transcat的bob插件爱你
+
+
+
 ## REST-API
 
 transcat提供了一些REST-API，可以通过API更改mode等，目前支持的API如下:
@@ -276,11 +282,50 @@ transcat提供了一些REST-API，可以通过API更改mode等，目前支持的
 
 
 
+### 选择服务翻译
+
+* POST: `/translate/{engine}`
+
+* Content-Type: `application/json`
+
+* params:
+
+  * engine - config文件配置的任意一个翻译引擎类型，比如: googlex、deeplx、caiyun等
+
+* body:
+
+  ```json
+  {
+  	"text": "hello world",
+  	"source_lang": "source language",
+  	"target_lang": "target language"
+  }
+  
+  ```
+
+* response
+
+  ```json
+  {
+    "code": 200,
+    "data": "你好 世界",
+    "engine":
+  }
+  ```
+
+
+
+### 获取服务器状态
+
+获取当前服务器的状态，包括translator、usage、mode等信息
+
+* GET: `/server/status`
+
+
+
 ## TODO
 
 Web-UI
-
-选择某个服务翻译的API
 
 
 
