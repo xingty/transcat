@@ -1,10 +1,11 @@
+from random import choice
 from src.web.exception.error import ServiceException,ErrorCode
 from src.utils import assertx,hash
 from src.mode import MODE_DICT
-from src.context import initChooser,translators
+from src.context import initChooser,translatorGroup,configuration
 from .translate_history import history
 from src.context import translateEngine as engine
-from src.context import configuration
+
 
 def translate(params,showEngine,useCache=False) -> dict:
   assertx.isTrue('source_lang' in params,'Missing parameter: [ source_lang ]')
@@ -56,15 +57,11 @@ def translateByService(serviceName,params,useCache=False) -> dict:
   if data is not None:
     return data
 
-  translator = None
-  for item in translators:
-    if item.type == serviceName:
-      translator = item
-      break
-  
-  if translator is None:
+  translators = translatorGroup[serviceName.lower()]
+  if translators is None or len(translators) < 1:
     raise ServiceException(ErrorCode.SERVICE_NOT_FOUND,'service not found')
 
+  translator = choice(translators)
   data = translator.translate(text,src,dst)
   if data is not None:
     cache = data.copy()
