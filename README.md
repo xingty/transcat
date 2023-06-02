@@ -40,10 +40,10 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
     },
     {
       "name": "tencent",
-      "type": "tencent", //腾讯翻译君
+      "type": "tencent",
       "app_key": "app_key",
       "app_id": "app_id",
-      "region": "region", //选填,默认值: ap-guangzhou
+      "region": "region",
       "weight": 2,
       "limit": 500000,
       "ratelimit": {
@@ -54,7 +54,7 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
     },
     {
       "name": "caiyun1",
-      "type": "caiyun", //彩云小译
+      "type": "caiyun",
       "app_key": "app_key",
       "weight": 2,
       "limit": 1000000,
