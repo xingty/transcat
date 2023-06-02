@@ -2,7 +2,7 @@ from src.translator.exception import TranslactionException,ExceptionType
 
 class LoadBalancer():
   def __init__(self,services,rule):
-    self._services = services
+    self._services = [ t for t in services if t.mode is None or 'load-balance' in t.mode ]
     self._rule = rule
 
   def choose(self,text,src,dst):

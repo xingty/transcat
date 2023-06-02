@@ -61,6 +61,9 @@ def initTranslators(config: Configuration):
       sys.exit(0)
     serviceMap[serviceId] = service
 
+    if item.get('mode'):
+      service.mode = item['mode']
+
     if serviceType == "tencent":
       region = item.get('region')
       if region:

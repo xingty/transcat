@@ -1,11 +1,10 @@
 
 class Select():
   def __init__(self,services) -> None:
-    self._services = services
+    self._services = [ t for t in services if t.mode is None or 'select' in t.mode ]
     self._index = 0
 
   def choose(self,text,src,dst):
-    print('index:' + str(self._index))
     return self._services[self._index]
   
   def select(self,index):
