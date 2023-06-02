@@ -2,7 +2,7 @@ from random import choice
 from src.web.exception.error import ServiceException,ErrorCode
 from src.utils import assertx,hash
 from src.mode import MODE_DICT
-from src.context import initChooser,translatorGroup,configuration
+from src.context import initChooser,translatorGroup,configuration,translators
 from .translate_history import history
 from src.context import translateEngine as engine
 
