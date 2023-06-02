@@ -9,6 +9,7 @@ class BaseTranslator():
     self.proxy = proxy
     self.limit = limit
     self.ratelimiter = None
+    self.mode = None
     self._languageMap = self.supportedLanguage()
   
   def translate(self,text,src,dst):

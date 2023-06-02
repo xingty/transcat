@@ -12,7 +12,7 @@ def deeplxAdapter():
   return {
     "code": 200,
     "id": 123321,
-    "data": data['data'],
+    "data": data['target_text'],
     "alternatives": []
   }
 
@@ -21,8 +21,13 @@ def translate(engine):
   useCache = not (request.args.get('disable_cache') == '1')
   data = service.translateByService(engine,request.json,useCache)
 
-  return data
-
+  return {
+    'code': 200,
+    'src': data['src'],
+    'dst': data['dst'],
+    'data': data['target_text'],
+    'engine': data['engine'],
+  }
 
 @bp.route('/translate/mode/switch',methods=['PUT'])
 def switchMode():

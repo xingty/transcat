@@ -1,10 +1,11 @@
+from random import choice
 from src.web.exception.error import ServiceException,ErrorCode
 from src.utils import assertx,hash
 from src.mode import MODE_DICT
-from src.context import initChooser,translators
+from src.context import initChooser,translatorGroup,configuration,translators
 from .translate_history import history
 from src.context import translateEngine as engine
-from src.context import configuration
+
 
 def translate(params,showEngine,useCache=False) -> dict:
   assertx.isTrue('source_lang' in params,'Missing parameter: [ source_lang ]')
@@ -38,16 +39,7 @@ def translate(params,showEngine,useCache=False) -> dict:
 
 def _getFromCache(text,dst):
   hashId = hash.md5(text + '_' + dst)
-  record = history.getByHashId(hashId)
-  if not record:
-    return None
-
-  return {
-    'src': record['src'],
-    'dst': record['dst'],
-    'data': record['target_text'],
-    'engine': record['engine'],
-  }
+  return history.getByHashId(hashId)
 
 def translateByService(serviceName,params,useCache=False) -> dict:
   assertx.isTrue('source_lang' in params,'Missing parameter: [ source_lang ]')
@@ -65,15 +57,11 @@ def translateByService(serviceName,params,useCache=False) -> dict:
   if data is not None:
     return data
 
-  translator = None
-  for item in translators:
-    if item.type == serviceName:
-      translator = item
-      break
-  
-  if translator is None:
-    raise ServiceException(ErrorCode.FAILED,'service not found')
+  translators = translatorGroup[serviceName.lower()]
+  if translators is None or len(translators) < 1:
+    raise ServiceException(ErrorCode.SERVICE_NOT_FOUND,'service not found')
 
+  translator = choice(translators)
   data = translator.translate(text,src,dst)
   if data is not None:
     cache = data.copy()
@@ -89,7 +77,8 @@ def translateByService(serviceName,params,useCache=False) -> dict:
   return {
     'src': src,
     'dst': dst,
-    'data': data['target_text'],
+    'target_text': data['target_text'],
+    'engine': serviceName
   }
 
 

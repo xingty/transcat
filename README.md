@@ -40,10 +40,10 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
     },
     {
       "name": "tencent",
-      "type": "tencent", //腾讯翻译君
+      "type": "tencent",
       "app_key": "app_key",
       "app_id": "app_id",
-      "region": "region", //选填,默认值: ap-guangzhou
+      "region": "region",
       "weight": 2,
       "limit": 500000,
       "ratelimit": {
@@ -54,7 +54,7 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
     },
     {
       "name": "caiyun1",
-      "type": "caiyun", //彩云小译
+      "type": "caiyun",
       "app_key": "app_key",
       "weight": 2,
       "limit": 1000000,
@@ -95,6 +95,11 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
     * caiyun - 彩云小译，需要填写申请到的密钥。
   * `app_key` - 你翻译服务的app_key(或者叫token)，根据你翻译服务来填写
   * `app_id` - 翻译服务app_id，目前baidu和tencent都有这个参数
+  * `mode` - 一个数组，标识引擎工作在什么样的mode下，可多选。
+    * 留空(默认) - 支持任何工作模式
+    * select - 该引擎只会在select模式下工作
+    * load-balance - 该引擎只会在load-balance模式下工作
+    * standalone - select和load-balance都不可用，但可以在单独调用时指定调用该引擎翻译
   * `weight` - 负载均衡权重，只有mode是load-balance会起作用。
   * `limit` - 每月的token数,当mode是load-balance，且rule为usage，这个值的大小会影响优先级
   * `proxy` - http代理，如果设置了，翻译服务会使用代理访问互联网。比如: http://127.0.0.1:7890
@@ -136,7 +141,7 @@ transcat --config config.json
 
   transcat的镜像支持x86-64以及ARM-64架构，所以Apple Silicon的用户可以放心从Docker hub中下载镜像。
 
-  transcat的docker地址是: [点击进入](https://hub.docker.com/repository/docker/bigbyto/transcat)，使用下面命令从docker hub中下载镜像。
+  transcat的docker地址是: [点击进入](https://hub.docker.com/r/bigbyto/transcat)，使用下面命令从docker hub中下载镜像。
 
   ```shell
   docker pull bigbyto/transcat:${version}
@@ -216,6 +221,12 @@ docker container start transcat
 
 
 
+## Bob插件
+
+[点击进入](https://github.com/xingty/bob-plugin-transcat)安装transcat的bob插件
+
+
+
 ## REST-API
 
 transcat提供了一些REST-API，可以通过API更改mode等，目前支持的API如下:
@@ -276,11 +287,50 @@ transcat提供了一些REST-API，可以通过API更改mode等，目前支持的
 
 
 
+### 选择服务翻译
+
+* POST: `/translate/{engine}`
+
+* Content-Type: `application/json`
+
+* params:
+
+  * engine - config文件配置的任意一个翻译引擎类型，比如: googlex、deeplx、caiyun等
+
+* body:
+
+  ```json
+  {
+    "text": "hello world",
+    "source_lang": "source language",
+    "target_lang": "target language"
+  }
+  
+  ```
+
+* response
+
+  ```json
+  {
+    "code": 200,
+    "data": "你好 世界",
+    "engine":
+  }
+  ```
+
+
+
+### 获取服务器状态
+
+获取当前服务器的状态，包括translator、usage、mode等信息
+
+* GET: `/server/status`
+
+
+
 ## TODO
 
 Web-UI
-
-选择某个服务翻译的API
 
 
 

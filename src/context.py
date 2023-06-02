@@ -8,6 +8,7 @@ from src.utils.text import buildServiceId
 from src.utils.ds import Sqlite3Datasource
 from src.translator import usageInfo as usage
 from src.configuration import Configuration
+from collections import defaultdict
 from logging.handlers import RotatingFileHandler
 import src.storage.ds_sqlite3 as storage
 import logging.config,os,sys
@@ -18,6 +19,7 @@ TRANSCAT_ASSETS_DIR = "TRANSCAT_ASSETS"
 applicationContext: Flask = None
 translateEngine: TranslateEngine = None
 translators = None
+translatorGroup = None
 datasource: Sqlite3Datasource = None
 configuration: Configuration = None
 
@@ -37,6 +39,7 @@ def initDB(location):
 
 def initTranslators(config: Configuration):
   global translators
+  global translatorGroup
   services = []
   serviceMap = {}
   for item in config.services:
@@ -61,6 +64,9 @@ def initTranslators(config: Configuration):
       sys.exit(0)
     serviceMap[serviceId] = service
 
+    if item.get('mode'):
+      service.mode = item['mode']
+
     if serviceType == "tencent":
       region = item.get('region')
       if region:
@@ -77,6 +83,10 @@ def initTranslators(config: Configuration):
     services.append(service)
   
   translators = services
+  translatorGroup = defaultdict(list)
+  for t in translators:
+    translatorGroup[t.type].append(t)
+
   initServiceUsage(serviceMap)
   return translators
 

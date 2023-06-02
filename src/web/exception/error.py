@@ -3,8 +3,9 @@ from flask import Response
 import json
 
 class ErrorCode(Enum):
-  SUCCEED = 0
+  SUCCEED = 200
   ACCESS_DENIED = 403
+  SERVICE_NOT_FOUND = 410
   FAILED = 500
 
 class ServiceException(Exception):

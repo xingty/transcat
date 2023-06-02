@@ -22,6 +22,7 @@ class DeepLX(BaseTranslator):
     timestamp = self.getTimestamp(iCount)
     
     _src = src
+    _dst = dst
     if "zh-" in src:
       _src = 'zh'
 
@@ -51,6 +52,7 @@ class DeepLX(BaseTranslator):
     else:
       payload = payload.replace("\"method\":\"", "\"method\": \"", -1)
 
+    payload = payload.encode('utf-8')
     response = requests.post(self.apiUrl,data=payload,headers=self.headers)
     if not response.ok:
       data = {
