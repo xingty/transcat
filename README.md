@@ -301,9 +301,9 @@ transcat提供了一些REST-API，可以通过API更改mode等，目前支持的
 
   ```json
   {
-  	"text": "hello world",
-  	"source_lang": "source language",
-  	"target_lang": "target language"
+    "text": "hello world",
+    "source_lang": "source language",
+    "target_lang": "target language"
   }
   
   ```
