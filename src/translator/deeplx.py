@@ -22,6 +22,7 @@ class DeepLX(BaseTranslator):
     timestamp = self.getTimestamp(iCount)
     
     _src = src
+    _dst = dst
     if "zh-" in src:
       _src = 'zh'
 
