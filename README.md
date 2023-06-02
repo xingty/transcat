@@ -95,6 +95,11 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
     * caiyun - 彩云小译，需要填写申请到的密钥。
   * `app_key` - 你翻译服务的app_key(或者叫token)，根据你翻译服务来填写
   * `app_id` - 翻译服务app_id，目前baidu和tencent都有这个参数
+  * `mode` - 一个数组，标识引擎工作在什么样的mode下，可多选。
+    * 留空(默认) - 支持任何工作模式
+    * select - 该引擎只会在select模式下工作
+    * load-balance - 该引擎只会在load-balance模式下工作
+    * standalone - select和load-balance都不可用，但可以在单独调用时指定调用该引擎翻译
   * `weight` - 负载均衡权重，只有mode是load-balance会起作用。
   * `limit` - 每月的token数,当mode是load-balance，且rule为usage，这个值的大小会影响优先级
   * `proxy` - http代理，如果设置了，翻译服务会使用代理访问互联网。比如: http://127.0.0.1:7890
