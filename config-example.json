@@ -10,13 +10,32 @@
       "type": "googlex",
       "proxy": "http://127.0.0.1:7890",
       "weight": 3,
-      "limit": 500000
+      "mdoe": ["select","load-balance"],
+      "limit": 500000,
+      "ratelimit": {
+        "type": "token-bucket",
+        "capacity": 10,
+        "time_window": 1
+      }
+    },
+    {
+      "name": "deeplx",
+      "type": "deeplx",
+      "weight": 1,
+      "limit": 500000,
+      "mode": ["standalone"],
+      "ratelimit": {
+        "type": "token-bucket",
+        "capacity": 1,
+        "time_window": 1
+      }
     },
     {
       "name": "bing1",
       "type": "bingx",
       "proxy": "http://127.0.0.1:7890",
       "weight": 3,
+      "mode": ["load-balance"],
       "limit": 500000
     },
     {
