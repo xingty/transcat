@@ -15,5 +15,5 @@ class LoadBalancer():
   def getAvailable(self,text,src,dst):
     return filter(lambda s: s.support(src,dst),self._services)
   
-  def allServes(self):
+  def allServices(self):
     return self._services

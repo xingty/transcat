@@ -14,5 +14,5 @@ class Select():
     
     self._index = index
 
-  def allServes(self):
+  def allServices(self):
     return self._services
