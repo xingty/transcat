@@ -24,8 +24,14 @@ def splitByMark(text,textSize,maxLenOfCharacters,mark={'\n'}):
         texts.append(content)
       else:
         right = i
+        
+  if left != right:
+    texts.append(text[left:right])
   
-  texts.append(text[left:textSize])
+  if right < textSize:
+    content = text[right:textSize]
+    if content != '' and content not in mark:   
+      texts.append(content)
 
   return texts
 
