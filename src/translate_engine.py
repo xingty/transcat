@@ -2,8 +2,9 @@ import time,logging,threading
 from src.utils.text import splitByMark
 from src.translator.exception import TranslactionException,ExceptionType
 from src.translator import usageInfo as usage
+import langdetect
 
-logger = logging.getLogger('translate')
+logger = logging.getLogger()
 
 class TranslateEngine():
   def __init__(self,service,mode) -> None:
@@ -14,22 +15,35 @@ class TranslateEngine():
   def translate(self,text,src,dst) -> dict:
     count = 0
     translator = None
+    detectLang = None
     try:
-      while (translator == None and count < 10):
-        translator = self.service.choose(text,src,dst)
-        count += 1
-        if not translator:
-          time.sleep(0.05)
-    except TranslactionException as e:
-      if e.etype == ExceptionType.SERVICE_NOT_FOUND:
-        logger.warn(
-          'No service found, service: {}, src: {%s}, dst: {%s}, text: {%s}' ,
-          len(self.service.allServer()),text,src,dst
-        )
+      while (translator == None and count < 5):
+        try:
+          count += 1
+          translator = self.service.choose(text,src,dst)
+          if not translator:
+            time.sleep(0.05)
+        except TranslactionException as te:
+          if te.etype == ExceptionType.SERVICE_NOT_FOUND:
+            if detectLang is None:
+              detectLang = langdetect.detect(text)
+            
+            if detectLang != src:
+              src = detectLang
+              logger.warn(
+                "No service found for %s => %s, detectLang => %s text => %s",
+                src,dst,detectLang,text
+              )
+              continue
+
+          raise te  
+            
+    except Exception as e:
+      logger.error('Unknown exception',exc_info=True)
       raise e
 
     if not translator:
-      logger.warn('Could not find a translator for: src: {%s}, dst: {%s}, text: {%s}',text,src,dst)
+      logger.warn('Could not find a translator for: src: %s, dst: %s, text: %s',text,src,dst)
       raise TranslactionException(None,ExceptionType.SERVICE_NOT_FOUND,{'text': text, 'src': src, 'dst': dst})
 
     size = len(text)
