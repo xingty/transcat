@@ -8,16 +8,18 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
 
 ## 支持的服务
 
-| 服务名称 | 支持情况 | 需要申请API Key | 限流建议(cap/window) | 申请指南                                                     |
-| -------- | -------- | --------------- | -------------------- | ------------------------------------------------------------ |
-| Google   | 是       | 否              | 10/1                 |                                                              |
-| 微软翻译 | 是       | 否              | 5/1                  |                                                              |
-| 百度翻译 | 是       | 是              | 10/1(高级认证)       | [点击进入](https://bobtranslate.com/service/translate/baidu.html) |
-| 彩云小译 | 是       | 是              | 10/1                 | [点击进入](https://bobtranslate.com/service/translate/caiyun.html) |
-| 阿里翻译 | Working  | 是              |                      | [点击进入](https://bobtranslate.com/service/translate/ali.html) |
-| OpenAI   | Working  | 是              |                      | [点击进入](https://bobtranslate.com/service/translate/openai.html) |
+| 服务名称   | 支持情况 | 需要申请API Key | 限流建议(cap/window) | 申请指南                                                     |
+| ---------- | -------- | --------------- | -------------------- | ------------------------------------------------------------ |
+| Google     | 是       | 否              | 10/1                 |                                                              |
+| 微软翻译   | 是       | 否              | 5/1                  |                                                              |
+| DeepLX     | 是       | 否              | 1/1                  |                                                              |
+| 腾讯翻译君 | 是       | 是              | 5/1                  | [点击进入](https://bobtranslate.com/service/translate/tencent.html) |
+| 百度翻译   | 是       | 是              | 10/1(高级认证)       | [点击进入](https://bobtranslate.com/service/translate/baidu.html) |
+| 彩云小译   | 是       | 是              | 10/1                 | [点击进入](https://bobtranslate.com/service/translate/caiyun.html) |
+| 阿里翻译   | Working  | 是              |                      | [点击进入](https://bobtranslate.com/service/translate/ali.html) |
+| OpenAI     | Working  | 是              |                      | [点击进入](https://bobtranslate.com/service/translate/openai.html) |
 
-
+**注:** 强烈【不推荐】在沉浸式翻译下使用DeepLX，很容易触发429限流导致一段时间无法使用DeepLX。
 
 ## 配置
 
