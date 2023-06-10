@@ -24,17 +24,18 @@ def getOptions():
   return parser.parse_args()
 
 def startWebServer(app: Flask,config):
-  from src.web.api import translation,server
+  from src.web.api import BLUEPRINTS
   from src.web.exception.error import ServiceException,restExceptionHandler
 
-  app.register_blueprint(translation.bp)
-  app.register_blueprint(server.bp)
+  for bp in BLUEPRINTS:
+    app.register_blueprint(bp)
+
   app.register_error_handler(ServiceException,restExceptionHandler)
 
   address = config.serverAddress
   port = config.serverPort
   print(f'transcat is running on {address}:{port}')
-  serve(app,host=address,port=port)
+  serve(app,host=address,port=port,threads=10)
   # app.run(host=address,port=port,debug=True,threaded=True)
 
 def main():
