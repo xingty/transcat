@@ -28,14 +28,16 @@ class TranslateEngine():
             if detectLang is None:
               detectLang = langdetect.detect(text)
             
+            logger.warn(
+              "No service found for %s => %s, detectLang => %s text => %s",
+              src,dst,detectLang,text
+            )
+
             if detectLang != src:
               src = detectLang
-              logger.warn(
-                "No service found for %s => %s, detectLang => %s text => %s",
-                src,dst,detectLang,text
-              )
               continue
-
+            
+            raise te
           raise te  
             
     except Exception as e:
