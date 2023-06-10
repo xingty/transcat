@@ -1,27 +1,14 @@
-from flask import (Blueprint, request)
-from src.context import configuration
-from src.translator import usageInfo
+import json
+from flask import Blueprint,render_template
+from src.web.server_state import getServerState
 
-bp = Blueprint('server', __name__, url_prefix='/api')
+bp = Blueprint('server', __name__)
 
-def mapServices(item: dict):
-  translator = item.copy()
-  if 'app_key' in translator:
-    translator['app_key'] = ("*" * 16)
-
-  return translator
-
-services = [ mapServices(item) for item in configuration.services ]
-
-
-from src.web.exception.error import ServiceException
-@bp.route('/server/status',methods=['GET'])
+@bp.route('/api/server/status',methods=['GET'])
 def serverState():
-  config = configuration.__dict__
-  for s in services:
-    info = usageInfo.getUsageInfo(s['name'],s['type'])
-    s['usage'] = info.usage
-  
-  config['services'] = services
+  return getServerState()
 
-  return config
+@bp.route('/',methods=['GET'])
+def index():
+  data = getServerState()
+  return render_template('index.html',data=json.dumps(data))
