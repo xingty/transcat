@@ -1,6 +1,16 @@
 import hashlib, json, time
 
 def verify(params,secret):
+  """
+  Verify if the request signature is valid.
+  
+  Args:
+  - params (dict): A dictionary containing the request parameters.
+  - secret (str): A secret key to be used in the signature verification.
+  
+  Raises:
+  - Exception: If the request is staled or the signature verification failed.
+  """
   timestamp = params['timestamp']
   now = int(time.time())
   if now - timestamp > 300:

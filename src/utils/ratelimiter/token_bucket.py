@@ -2,6 +2,16 @@ import threading,time
 
 class TokenBucket():
   def __init__(self,capacity,windowTimeInSeconds) -> None:
+    """
+    Initializes an instance of the Token Bucket algorithm.
+    
+    Args:
+        capacity (int): The maximum number of tokens that the bucket can hold.
+        windowTimeInSeconds (int): The time window in seconds for refilling the bucket.
+    
+    Returns:
+        None
+    """
     self.capacity = capacity
     self.fillTokenPerSecond = int(capacity / windowTimeInSeconds)
     assert self.fillTokenPerSecond > 0
@@ -10,6 +20,10 @@ class TokenBucket():
     self.lock = threading.Lock()
 
   def acquire(self):
+    """
+    Acquires a token from the bucket if available. Returns True if a token was successfully acquired,
+    False otherwise.
+    """
     with self.lock:
       now = int(time.time())
       elapsed = now - self.lastRefillTime

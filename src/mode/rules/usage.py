@@ -7,6 +7,16 @@ class Usage():
     pass
 
   def choose(self, text,servers) -> object:
+    """
+    Choose the best server to handle the given text from a list of servers.
+    
+    Args:
+        text (str): The text to be processed.
+        servers (list): A list of available servers to choose from.
+        
+    Returns:
+        object: The server object with the highest score based on its usage info and limit.
+    """
     maxScore = ~sys.maxsize
     candidate = None
     for server in servers:

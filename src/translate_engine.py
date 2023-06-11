@@ -13,6 +13,13 @@ class TranslateEngine():
     self.lock = threading.Lock()
 
   def translate(self,text,src,dst) -> dict:
+    """
+    Translates text from one language to another using a translation service.
+    :param text: The text to be translated.
+    :param src: The source language code of the text.
+    :param dst: The destination language code to translate the text to.
+    :return: A dictionary containing the translated text and additional information.
+    """
     count = 0
     translator = None
     detectLang = None

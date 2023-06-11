@@ -6,6 +6,13 @@ class Weight():
     pass
   
   def choose(self, text,servers) -> object:
+    """
+    Choose the server with the lowest score.
+
+    :param text: A string representing the text to be processed.
+    :param servers: A list of server objects to choose from.
+    :return: The server object with the lowest score.
+    """
     minScore = sys.maxsize
     candidate = None
     for server in servers:
