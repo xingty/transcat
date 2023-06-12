@@ -5,6 +5,7 @@ from src.mode import MODE_DICT
 from src.context import initChooser,translatorGroup,configuration,translators
 from .translate_history import history
 from src.context import translateEngine as engine
+from src.translator import usageInfo as usage
 
 
 def translate(params,showEngine,useCache=False) -> dict:
@@ -73,6 +74,8 @@ def translateByService(serviceName,params,useCache=False) -> dict:
       'engine': translator.type
     })
     history.push(cache)
+
+  usage.updateUsageInfo(translator.name,translator.type,len(text))
 
   return {
     'src': src,
