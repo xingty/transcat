@@ -1,6 +1,6 @@
 from random import choice
 from src.web.exception.error import ServiceException,ErrorCode
-from src.utils import assertx,hash
+from src.utils import assertx,hash,http
 from src.mode import MODE_DICT
 from src.context import initChooser,translatorGroup,configuration,translators
 from .translate_history import history
@@ -63,7 +63,15 @@ def translateByService(serviceName,params,useCache=False) -> dict:
     raise ServiceException(ErrorCode.SERVICE_NOT_FOUND,'service not found')
 
   translator = choice(translators)
-  data = translator.translate(text,src,dst)
+  try:
+    data = translator.translate(text,src,dst)
+  except Exception as e:
+    message = 'server internal error'
+    if isinstance(e,http.NetworkException):
+      message = e.message
+
+    raise ServiceException(ErrorCode.FAILED,message)
+
   if data is not None:
     cache = data.copy()
     cache.update({
