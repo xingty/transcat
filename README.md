@@ -245,6 +245,8 @@ transcat提供了一些REST-API，可以通过API更改mode等，目前支持的
 
 * Content-Type: `application/json`
 
+* Authorization: `Bareer  app_key`
+
 * query params
 
   * app_key - 配置文件中的app_key，该选项必填
@@ -291,6 +293,7 @@ transcat提供了一些REST-API，可以通过API更改mode等，目前支持的
 
 * PUT: `/translate/select`
 * Content-Type: `application/x-www-form-urlencoded`
+* Authorization: `Bareer  app_key`
 * Params
   * index - 服务列表中的index
 
@@ -301,6 +304,8 @@ transcat提供了一些REST-API，可以通过API更改mode等，目前支持的
 * POST: `/translate/{engine}`
 
 * Content-Type: `application/json`
+
+* Authorization: `Bareer  app_key`
 
 * params:
 
@@ -334,6 +339,7 @@ transcat提供了一些REST-API，可以通过API更改mode等，目前支持的
 获取当前服务器的状态，包括translator、usage、mode等信息
 
 * GET: `/server/status`
+* Authorization: `Bareer  app_key`
 
 
 
