@@ -136,6 +136,9 @@ def initTranslateEngine(config: Configuration,translators: list):
 def createAppContext(config: Configuration):
   global applicationContext
   applicationContext = Flask(APP_NAME)
+
+  from src.web import auth
+
   return applicationContext
 
 def initAssetsDir(path: str):
