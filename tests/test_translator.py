@@ -44,5 +44,14 @@ class TestTranslator(unittest.TestCase):
 
     self.assertTrue('target_text' in result and len(result['target_text']) > 0)
 
+  def test_openai(self):
+    from src.translator.openai import OpenAI
+    key = os.getenv('OPENAI_API_KEY')
+    openai = OpenAI('openai1',key)
+
+    result = openai.translate('The text was broken up into smaller sets of tokens, so looping through in ascending order and continuing to add the text is a critical step to ensure a full answer','en','zh')
+    self.assertTrue('target_text' in result and len(result['target_text']) > 0)
+
+
 if __name__ == '__main__':
   unittest.main()
