@@ -247,6 +247,7 @@ transcat提供了一些REST-API，可以通过API更改mode等，目前支持的
 
 * query params
 
+  * app_key - 配置文件中的app_key，该选项必填
   * show_engine - 0: 不显示翻译引擎 1-显示翻译引擎，默认为0
   * disable_cache - 是否禁止cache 0: 不禁止 1-禁止，默认为1
 
