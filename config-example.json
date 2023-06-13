@@ -39,6 +39,21 @@
       "limit": 500000
     },
     {
+      "name": "openai1",
+      "type": "openai",
+      "proxy": "http://127.0.0.1:7890",
+      "app_key": "openai_api_key",
+      "weight": 1,
+      "limit": 5000000,
+      "mode": ["standalone"],
+      "model": "gpt-3.5-turbo",
+      "ratelimit": {
+        "type": "token-bucket",
+        "capacity": 1,
+        "time_window": 1
+      }
+    },
+    {
       "name": "tencent1",
       "type": "tencent",
       "app_key": "app_key",

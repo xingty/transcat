@@ -72,6 +72,11 @@ def initTranslators(config: Configuration):
       if region:
         service.region = region
 
+    if serviceType == "openai":
+      model = item.get('model') or 'gpt-3.5-turbo'
+      assert model == 'gpt-3.5-turbo' or model == 'gpt4'
+      service.model = model
+
     rate = item.get('rate')
     if rate:
       limiter = RATELIMITERS.get(rate.type)
