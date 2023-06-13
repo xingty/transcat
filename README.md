@@ -17,9 +17,9 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
 | 百度翻译   | 是       | 是              | 10/1(高级认证)       | [点击进入](https://bobtranslate.com/service/translate/baidu.html) |
 | 彩云小译   | 是       | 是              | 10/1                 | [点击进入](https://bobtranslate.com/service/translate/caiyun.html) |
 | 阿里翻译   | Working  | 是              |                      | [点击进入](https://bobtranslate.com/service/translate/ali.html) |
-| OpenAI     | Working  | 是              |                      | [点击进入](https://bobtranslate.com/service/translate/openai.html) |
+| OpenAI     | 是       | 是              | 1/1                  | [点击进入](https://bobtranslate.com/service/translate/openai.html) |
 
-**注:** 强烈【不推荐】在沉浸式翻译下使用DeepLX，很容易触发429限流导致一段时间无法使用DeepLX。
+**注:** 强烈【不推荐】在沉浸式翻译下使用DeepLX，很容易触发429限流导致一段时间无法使用DeepLX。如果要使用OpenAI，推荐使用多几个Key做负载均衡。
 
 ## 配置
 
@@ -95,6 +95,8 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
     * baidu - 百度翻译，需要填写密钥。如果要用，建议高级认证，因为普通用户1秒限流1个请求。
     * tencent - 腾讯翻译君，需要填写申请到的密钥。
     * caiyun - 彩云小译，需要填写申请到的密钥。
+    * openai - 目前支持`gpt-3.5-turbo`和`gpt4`
+    * deeplx - 推荐只在standalone模式下使用
   * `app_key` - 你翻译服务的app_key(或者叫token)，根据你翻译服务来填写
   * `app_id` - 翻译服务app_id，目前baidu和tencent都有这个参数
   * `mode` - 一个数组，标识引擎工作在什么样的mode下，可多选。
