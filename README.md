@@ -28,6 +28,7 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
 ```json
 {
   "server_address": "127.0.0.1",
+  "app_key": "app_key",
   "server_port": "8086",
   "datasource": {
     "type": "sqlite"
@@ -78,6 +79,8 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
 
 * `server_port ` - 监听端口，默认8010
 
+* `app_key` - 认证的Key
+
 * `assets_dir`: 资源文件输出目录，比如log、sqlite3的数据库文件等，docker环境下此参数会被忽略。
 
 * `mode`  工作模式
@@ -92,6 +95,7 @@ transcat提供了兼容沉浸式翻译(Immersive translate)的API，具体配置
   * `name` - 名字可以随意起，不过必须唯一，否则启动会报错
   * `type` - 翻译服务类型，目前支持下面服务
     * googlex - Google翻译，直接调用它网页的API，不需要填写密钥。
+    * bingx - 微软的翻译，直接调用它网页的API，不需要填写密钥。
     * baidu - 百度翻译，需要填写密钥。如果要用，建议高级认证，因为普通用户1秒限流1个请求。
     * tencent - 腾讯翻译君，需要填写申请到的密钥。
     * caiyun - 彩云小译，需要填写申请到的密钥。
