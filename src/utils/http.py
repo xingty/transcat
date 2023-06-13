@@ -7,6 +7,9 @@ class NetworkException(Exception):
     self.statusCode = code
     self.message = message
 
+  def __str__(self) -> str:
+    return f'code => {self.statusCode}, message => {self.message}'
+
 def post(url,data,headers=None,proxy=None):
   return _sendRequest(
     url=url,
