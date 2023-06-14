@@ -215,7 +215,9 @@ docker container start transcat
 
 2. 点击主页下方的"开发者设置"，开启 Beta 测试特性
 
-3. 基本设置中找到 DeepLX，输入自建 transcat的URL，如: http://127.0.0.1:8010/api/translate/deeplx/adapter?show_engine=1&disable_cache=0
+3. 基本设置中找到 DeepLX，输入自建 transcat的URL，如: http://127.0.0.1:8010/api/translate/deeplx/adapter?show_engine=1&disable_cache=0&app_key=key
+
+   `app_key`是必填项，该参数的值是config文件中的app_key。
 
    `show_engine` 参数为1时，翻译文字后面会带上翻译服务类型。比如
 
