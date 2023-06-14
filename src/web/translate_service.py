@@ -42,6 +42,10 @@ def _getFromCache(text,dst):
   hashId = hash.md5(text + '_' + dst)
   return history.getByHashId(hashId)
 
+def _getEngineCacahe(text,dst,engine):
+  hashId = hash.md5(text + '_' + dst)
+  return history.getByHashIdAndEngine(hashId,engine)
+
 def translateByService(serviceName,params,useCache=False) -> dict:
   assertx.isTrue('source_lang' in params,'Missing parameter: [ source_lang ]')
   assertx.isTrue('target_lang' in params,'Missing parameter: [ target_lang ]')
@@ -51,19 +55,18 @@ def translateByService(serviceName,params,useCache=False) -> dict:
   src = params['source_lang'].lower()
   dst = params['target_lang'].lower()
 
-  data = None
-  if useCache:
-    data = _getFromCache(text,dst)
-  
-  if data is not None:
-    return data
-
   translators = translatorGroup[serviceName.lower()]
   if translators is None or len(translators) < 1:
     raise ServiceException(ErrorCode.SERVICE_NOT_FOUND,'service not found')
 
   translator = choice(translators)
+  data = None
   try:
+    if useCache:
+      data = _getEngineCacahe(text,dst,translator.type)
+      if data:
+        return data
+
     data = translator.translate(text,src,dst)
   except Exception as e:
     message = 'server internal error'

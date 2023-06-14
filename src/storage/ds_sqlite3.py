@@ -5,6 +5,8 @@ INCREMENT_USAGE = 'update service_usage set usage = usage + ? where service_id =
 INSERT_HISTORY ='insert into translate_history (sid,src,dst,source_text,target_text,hash_id,engine,text_length) values (?,?,?,?,?,?,?,?)'
 FIND_BY_HASH_ID = 'select * from translate_history where hash_id = ? order by id desc'
 
+FIND_BY_HASH_ID_AND_ENGINE = 'select * from translate_history where hash_id = ? and engine = ? order by id desc'
+
 
 def findUsageByServiceIds(conn,serviceIds):
   query = 'select * from service_usage where service_id in ({})'.format(','.join('?' * len(serviceIds)))
@@ -21,6 +23,9 @@ def findUsageByServiceId(conn,serviceId):
 
 def findHistoryByHashId(conn,hashId):
   return conn.execute(FIND_BY_HASH_ID,(hashId,)).fetchone()
+
+def findByHashIDAndEngine(conn,hashId,engine):
+  return conn.execute(FIND_BY_HASH_ID_AND_ENGINE,(hashId,engine)).fetchone()
 
 def addTranslateHistory(conn,columns):
   return conn.execute(INSERT_HISTORY,columns)

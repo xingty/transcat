@@ -20,6 +20,14 @@ class TranslateHistory():
       
       return dict(row)
 
+  def getByHashIdAndEngine(self,hashId,engine):
+    with datasource.getConnection() as conn:
+      row = storage.findByHashIDAndEngine(conn,hashId,engine)
+      if not row:
+        return None
+      
+      return dict(row)
+
   def push(self,data):
     self.queue.put(data)
 
