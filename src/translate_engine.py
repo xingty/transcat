@@ -2,7 +2,7 @@ import time,logging,threading
 from src.utils.text import splitByMark
 from src.translator.exception import TranslactionException,ExceptionType
 from src.translator import usageInfo as usage
-import langdetect
+import langdetect,threading
 
 logger = logging.getLogger()
 
@@ -33,12 +33,18 @@ class TranslateEngine():
         except TranslactionException as te:
           if te.etype == ExceptionType.SERVICE_NOT_FOUND:
             if detectLang is None:
-              detectLang = langdetect.detect(text)
+              try:
+                detectLang = langdetect.detect(text)
+              except Exception:
+                pass
             
             logger.warn(
               "No service found for %s => %s, detectLang => %s text => %s",
               src,dst,detectLang,text
             )
+
+            if detectLang is None:
+              break
 
             if detectLang != src:
               src = detectLang
