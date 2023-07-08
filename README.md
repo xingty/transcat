@@ -209,7 +209,7 @@ docker container start transcat
 
 ## 与沉浸式翻译集成
 
-目前沉浸式翻译没有直接支持transcat，不过因为它支持DeeplX，transcat对它DeeplX的接口做了兼容，使用步骤如下:
+沉浸式翻译目前有一个DeeplX接口，transcat对它DeeplX的接口做了兼容，使用请按照下面步骤配置:
 
 1. 点击扩展的"选项"进入扩展主页
 
@@ -228,6 +228,25 @@ docker container start transcat
    ```
 
    `disable_cache` 默认为0。transcat会缓存翻译结果，如果下次翻译命中缓存，默认会直接从缓存中取出。如果`disable_cache` = 1，那么将忽略缓存直接调用翻译服务查询新的结果。**注意: 沉浸式翻译本身就会缓存翻译结果，因此如果你的参数有变动，请换一个网页查看效果。**
+
+4. 设置并发量 
+
+   DeeplX默认的并发数1秒限制了3个，我们需要改变一下这个值提高翻译速度，请点击展开详细配置
+
+   ![https://user-images.githubusercontent.com/3600657/251964142-828d5f37-0cd5-4a79-b195-0b758d659417.png](https://user-images.githubusercontent.com/3600657/251964142-828d5f37-0cd5-4a79-b195-0b758d659417.png)
+
+   这里的并发数可以根据实际情况配置。请注意，这里的配置并非越大越好，因为很多翻译服务存在限流，需要根据你翻译服务的短板配置，打个比方:
+
+   假如config.json配置了4个翻译服务
+
+   * googlex - weight: 4
+   * bingx - weight: 3
+   * caiyun - weight: 2
+   * tencent - weight: 2
+
+   已知腾讯翻译君的API限流策略为每秒5个请求，按照上面的配置，weight=2，即每11个请求，就会有2个落在腾讯翻译君上。
+
+   假如我们把沉浸式翻译的并发请求数设为30，那么可以计算落在腾讯翻译君的QPS = 2 / 11 * 30 = 5.45，已经超过了腾讯翻译君的API限制，这种情况要么调整weight，要么减少沉浸式翻译的并发数，否则触发限流，反而会影响翻译响应速度。
 
 
 
