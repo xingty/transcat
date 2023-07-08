@@ -30,8 +30,9 @@ class Caiyun(BaseTranslator):
     if 'zh' in dst:
       transType = src + '2zh'
     
+    paragraphs = text.split('\n')
     payload = {
-      "source" : [text], 
+      "source" : paragraphs, 
       "trans_type" : transType,
       "request_id" : "demo",
     }
@@ -50,7 +51,7 @@ class Caiyun(BaseTranslator):
         raise TranslactionException(self.type,ExceptionType.UNKNOWN,data)
 
       return {
-        "target_text": data['target'][0],
+        "target_text": "\n".join(data['target']),
       }
     except http.NetworkException as e:
       raise TranslactionException(self.type,ExceptionType.NETWORK,e.message)
