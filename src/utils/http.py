@@ -10,12 +10,12 @@ class NetworkException(Exception):
   def __str__(self) -> str:
     return f'code => {self.statusCode}, message => {self.message}'
 
-def post(url,data,headers=None,proxy=None):
+def post(url,data,headers=None,params=None,proxy=None):
   return _sendRequest(
     url=url,
     method='POST',
     data=data,
-    params=None,
+    params=params,
     headers=headers,
     proxy=proxy
   )
