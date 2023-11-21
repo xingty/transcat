@@ -132,12 +132,12 @@ LANGUAGE = {
 
 
 class Azure(BaseTranslator):
-    def __init__(self, name, appKey, region, appId=None, limit=-1, weight=1, proxy=False):
+    def __init__(self, name, appKey, appId=None, limit=-1, weight=1, proxy=False):
         super().__init__(name, appKey, appId, limit, weight, proxy)
         assert appKey is not None and len(appKey) > 0
         self.type = "azure"
         self.apiUrl = 'https://api.cognitive.microsofttranslator.com/translate'
-        self.region = region
+        self.region = "eastasia"
         self.headers = {
             'Ocp-Apim-Subscription-Key': appKey,
             'Ocp-Apim-Subscription-Region': self.region,
@@ -149,10 +149,10 @@ class Azure(BaseTranslator):
         _src = src
         _dst = dst
         if 'zh-' in src:
-            _src = 'zh' if src == 'zh-hans' else 'zh-TW'
+            _src = 'zh-Hans' if src == 'zh-hans' else 'zh-Hant'
 
         if 'zh-' in dst:
-            _dst = 'zh' if dst == 'zh-hans' else 'zh-TW'
+            _dst = 'zh-Hans' if dst == 'zh-hans' else 'zh-Hant'
         params = {
             'api-version': '3.0',
             'from': _src,

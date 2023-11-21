@@ -29,7 +29,7 @@ LANGUAGE = {
 API_URL = 'https://api.openai.com/v1/chat/completions'
 
 class OpenAI(BaseTranslator):
-  def __init__(self, name, appKey, appId=None, region=None,  limit=-1, weight=1, proxy=False):
+  def __init__(self, name, appKey, appId=None, limit=-1, weight=1, proxy=False):
     super().__init__(name, appKey, appId, limit, weight, proxy)
     self.model = 'gpt-3.5-turbo'
     self.type = 'openai'

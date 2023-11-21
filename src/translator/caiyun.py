@@ -12,7 +12,7 @@ LANGUAGE = {
 }
 
 class Caiyun(BaseTranslator):
-  def __init__(self,name,appKey,appId=None, region=None, limit=-1,weight=1,proxy=False):
+  def __init__(self,name,appKey,appId=None, limit=-1,weight=1,proxy=False):
     super().__init__(name,appKey,appId,limit,weight,proxy)
     assert appKey is not None and len(appKey) > 0
     self.type = "caiyun"
