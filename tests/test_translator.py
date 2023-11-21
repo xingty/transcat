@@ -53,9 +53,8 @@ class TestTranslator(unittest.TestCase):
     self.assertTrue('target_text' in result and len(result['target_text']) > 0)
   def test_azure(self):
     key = os.getenv('AZURE')
-    print(key)
     Azure = TRANSLATORS.get('azure')
-    azure= Azure('azure1',key)
+    azure= Azure('azure1',key,'eastasia')
     result = azure.translate('hello','en','zh')
 
     self.assertTrue('target_text' in result and len(result['target_text']) > 0)
