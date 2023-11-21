@@ -1,42 +1,33 @@
-name: Build and release
-on: 
-  push:
-    tags:
-      - 'v*'
+name: Publish Docker image
+
+on:
+  workflow_dispatch:
+
 jobs:
-  build:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-      packages: write
-
-    strategy:
-      matrix:
-        python-version: ["3.10"]
-
     steps:
-      - uses: actions/checkout@v3
-      - name: Get version
-        id: get_version
-        uses: battila7/get-version-action@v2
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Check out the repo
+        uses: actions/checkout@v4
+      
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Build
-        run: |
-          python -m pip install --upgrade pip
-          pip install setuptools
-          python setup.py sdist
-      - name: release
-        uses: svenstaro/upload-release-action@v2
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          release_name: ${{ steps.get_version.outputs.version }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/${{ github.event.repository.name }}-${{ steps.get_version.outputs.version-without-v }}.tar.gz
-          asset_name: ${{ github.event.repository.name }}-${{ steps.get_version.outputs.version }}.tar.gz
-          tag: ${{ github.ref }}
-          overwrite: true
-          body: ${{ steps.tag.outputs.message }}
+          images: yoghurtguy/transcat
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
