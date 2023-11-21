@@ -156,7 +156,7 @@ class BingAbuseHelper:
     return now >= self.expired or self.counter.get() >= 10
 
 class BingX(BaseTranslator):
-  def __init__(self,name,appKey=None,appId=None, limit=-1,weight=1,proxy=False):
+  def __init__(self,name,appKey=None,appId=None,limit=-1,weight=1,proxy=False):
     super().__init__(name,appKey,appId,limit,weight,proxy)
     self.type = 'bingx'
     self.apiUrl = 'https://www.bing.com/ttranslatev3?isVertical=1&&IG=A4C997CC519A48C29AE92C20F2E5247E&IID=translator.5027'

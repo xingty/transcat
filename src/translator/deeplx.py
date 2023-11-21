@@ -3,7 +3,7 @@ import random,time,json,requests
 from src.translator.exception import TranslactionException,ExceptionType
 
 class DeepLX(BaseTranslator):
-  def __init__(self, name,appKey=None,appId=None, limit=-1, weight=1, proxy=False):
+  def __init__(self, name,appKey=None,appId=None,limit=-1, weight=1, proxy=False):
     super().__init__(name, appKey,appId,limit,weight,proxy)
     self.apiUrl = 'https://www2.deepl.com/jsonrpc'
     self.type = 'deeplx'
