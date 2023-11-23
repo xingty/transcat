@@ -67,10 +67,8 @@ def initTranslators(config: Configuration):
     if item.get('mode'):
       service.mode = item['mode']
 
-    if serviceType == "tencent":
-      region = item.get('region')
-      if region:
-        service.region = region
+    if item.get('region'):
+      service.region = item['region']
 
     if serviceType == "openai":
       model = item.get('model') or 'gpt-3.5-turbo'

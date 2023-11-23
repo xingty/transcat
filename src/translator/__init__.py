@@ -6,6 +6,7 @@ from src.translator.googlex import GoogleX
 from src.translator.usage_info import UsageInfo
 from src.translator.bingx import BingX
 from src.translator.openai import OpenAI
+from src.translator.azure import Azure
 
 TRANSLATORS = {
   "caiyun": Caiyun,
@@ -14,7 +15,8 @@ TRANSLATORS = {
   "deeplx": DeepLX,
   "googlex": GoogleX,
   "bingx": BingX,
-  "openai": OpenAI
+  "openai": OpenAI,
+  "azure": Azure,
 }
 
 usageInfo: UsageInfo = UsageInfo()
